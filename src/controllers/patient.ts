@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Doctor from "../models/Doctor";
+import { Doctor } from "../models/Doctor";
 import Room from "../models/Room";
 import { getHospitalRepository } from "../repositories/Hospital";
 import HospitalRepository from "../repositories/Hospital/repository";

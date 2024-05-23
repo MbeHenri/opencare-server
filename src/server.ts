@@ -6,12 +6,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { PatientModel as Patient } from "./models/Patient";
 import { port, dbURI, key_token, CORS_ALLOW_HOSTS } from "./config";
-import patientRoutes from "./routes/patient";
-import doctorRoutes from "./routes/doctor";
-import swaggerJSDoc from "swagger-jsdoc";
-import swaggerUi from "swagger-ui-express";
 
-//import Routes from "./src/routes";
+import Routes from "./routes";
 
 const app = express();
 const PORT = port;
@@ -102,40 +98,4 @@ function verifyJWT(req: Request, res: Response) {
   }
 }
 
-//new Routes(app)
-app.use("/patient", patientRoutes);
-app.use("/doctor", doctorRoutes);
-
-const op = {
-  definition: {
-    openapi: "3.1.0",
-    info: {
-      title: "Opencare API",
-      version: "0.1.0",
-      description:
-        "This is a Opencare API documented with Swagger",
-      license: {
-        name: "MIT",
-        //url: "https://spdx.org/licenses/MIT.html",
-      },
-      contact: {
-        name: "Opencare",
-        url: "https://opencare.com",
-        email: "opencare@email.com",
-      },
-    },
-    servers: [
-      {
-        url: "http://localhost:" + PORT,
-      },
-    ],
-  },
-  apis: ["./routes/*.ts"],
-};
-
-const specs = swaggerJSDoc(op);
-app.use(
-  "/api-docs",
-  swaggerUi.serve,
-  swaggerUi.setup(specs, { explorer: true })
-);
+Routes.register(app)

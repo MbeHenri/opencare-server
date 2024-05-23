@@ -23,7 +23,7 @@ const PatientSchema = new mongoose.Schema({
     minlength: 6,
   },
 }, {
-  collection: 'roles'
+  collection: 'patients'
 });
 
 export const PatientModel = mongoose.model<PatientDocument>("Patient", PatientSchema);
