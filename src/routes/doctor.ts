@@ -1,11 +1,11 @@
+import DoctorController from '../controllers/doctor';
 import { BaseRouter } from './base';
-import DoctorController from 'src/controllers/doctor';
 
 
 class DoctorRouter extends BaseRouter {
-    controller = new DoctorController();
-
+    controller: DoctorController;
     intializeRoutes() {
+        this.controller = new DoctorController();
         this.router.post('/:id/room', this.controller.createRoom);
         this.router.get('/:id/room', this.controller.getRelatedRooms);
         this.router.get('/:id/room/:patient_id', this.controller.getRelatedRoom);

@@ -1,10 +1,10 @@
-import { TALK_PASSWORD, TALK_USER } from "src/repositories/env";
+import { TALK_PASSWORD, TALK_USER } from "../repositories/env";
 import Room from "../models/Room";
 import { getRoomRepository } from "../repositories/Room";
 import RoomRepository from "../repositories/Room/repository";
 import BaseController from "./base";
-import HospitalRepository from "src/repositories/Hospital/repository";
-import { getHospitalRepository } from "src/repositories/Hospital";
+import HospitalRepository from "../repositories/Hospital/repository";
+import { getHospitalRepository } from "../repositories/Hospital";
 import { Request, Response } from "express";
 
 class DoctorController extends BaseController {

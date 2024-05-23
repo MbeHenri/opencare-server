@@ -3,7 +3,7 @@ import patientRoutes from "./patient";
 import doctorRoutes from "./doctor";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
-import { REST_DOCS_OPTIONS } from "src/docs";
+import { REST_DOCS_OPTIONS } from "../docs";
 
 export default class Routes {
     static register(app: Application) {
