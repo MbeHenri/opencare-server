@@ -6,7 +6,7 @@ class DemandRouter extends BaseRouter {
     controller: DemandController;
     intializeRoutes() {
         this.controller = new DemandController();
-        this.router.post('/', this.controller.getDemands);
+        this.router.get('', this.controller.getDemands);
         this.router.put('/send', this.controller.doDemand);
         this.router.put('/validated', this.controller.validDemand);
         this.router.put('/rejected', this.controller.rejectDemand);

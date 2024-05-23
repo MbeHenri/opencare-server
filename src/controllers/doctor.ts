@@ -68,10 +68,15 @@ class DoctorController extends BaseController {
     async getRelatedRooms(req: Request, res: Response) {
         try {
             const doctor_id = req.params.id;
-            const rooms = await this.room_rep.getRelatedRooms(`${TALK_USER}`, `${TALK_PASSWORD}`);
-            res.status(201).json(rooms.filter((element) => {
-                return element.name.split('#')[0] === `${doctor_id}`
-            }));
+            const { patient_id } = req.query;
+            
+            const rooms = (await this.room_rep.getRelatedRooms(`${TALK_USER}`, `${TALK_PASSWORD}`))
+                .filter((element) => {
+                    return patient_id ?
+                        element.name === `${doctor_id}#${patient_id}` :
+                        element.name.split('#')[0] === `${doctor_id}`;
+                });
+            res.status(201).json(rooms);
         } catch (error) {
             res.status(405).json({ message: error as string });
         }

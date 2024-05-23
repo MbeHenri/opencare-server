@@ -5,8 +5,8 @@ class DemandController {
 
     async getDemands(req: Request, res: Response) {
         try {
-            const uuidDoctor = req.body.doctor_id
-            const uuidPatient = req.body.patient_id
+            const uuidDoctor = req.query.doctor_id
+            const uuidPatient = req.query.patient_id
             const filter = {};
             if (uuidDoctor) {
                 filter["uuidDoctor"] = uuidDoctor

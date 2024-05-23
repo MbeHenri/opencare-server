@@ -7,9 +7,8 @@ class DoctorRouter extends BaseRouter {
     intializeRoutes() {
         this.controller = new DoctorController();
         this.router.get('/:id', this.controller.getDoctor);
-        this.router.post('/:id/room', this.controller.createRoom);
         this.router.get('/:id/room', this.controller.getRelatedRooms);
-        this.router.get('/:id/room/:patient_id', this.controller.getRelatedRoom);
+        this.router.post('/:id/room', this.controller.createRoom);
     }
 }
 
