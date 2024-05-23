@@ -88,43 +88,6 @@ class PatientController extends BaseController {
         }
     }
 
-    async getDemands(req: Request, res: Response) {
-        try {
-            const patient_id = req.params.id
-            const demands = await DemandModel.find({ uuidPatient: patient_id }).sort('-createdAt').exec();
-            res.status(200).json(demands);
-
-        } catch (error) {
-            res.status(405).json({ message: error as string });
-        }
-    }
-
-    async doDemand(req: Request, res: Response) {
-
-        try {
-            const { mettingDateStr, doctor_id } = req.body
-
-            if (!mettingDateStr) {
-                throw new Error("give metting date");
-            }
-
-            if (!doctor_id) {
-                throw new Error("give doctor id");
-            }
-
-            const input: DemandInput = {
-                meetingDate: new Date(mettingDateStr),
-                uuidPatient: req.params.id,
-                uuidDoctor: doctor_id
-            }
-            const demand = await DemandModel.create(input)
-            res.status(201).json({ demandDate: demand.demandDate });
-
-        } catch (error) {
-            res.status(405).json({ message: error as string });
-        }
-    }
-
 }
 
 export default PatientController;

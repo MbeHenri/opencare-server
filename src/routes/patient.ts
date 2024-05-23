@@ -10,8 +10,6 @@ class PatientRouter extends BaseRouter {
         this.router.get('/:id/doctor', this.controller.getRelatedDoctors);
         this.router.get('/:id', this.controller.getPatient);
         this.router.get('/:id/visit', this.controller.getVisits);
-        this.router.get('/:id/demand', this.controller.getDemands);
-        this.router.post('/:id/demand', this.controller.doDemand);
     }
 }
 const patientRoutes = new PatientRouter().router;

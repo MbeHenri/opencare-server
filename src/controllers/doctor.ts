@@ -7,6 +7,7 @@ import HospitalRepository from "../repositories/Hospital/repository";
 import { getHospitalRepository } from "../repositories/Hospital";
 import { Request, Response } from "express";
 import { DemandModel, StatusDemand } from "../models/Demand";
+import { DoctorModel } from "../models/Doctor";
 
 class DoctorController extends BaseController {
 
@@ -76,43 +77,17 @@ class DoctorController extends BaseController {
         }
     }
 
-    async getDemands(req: Request, res: Response) {
+    async getDoctor(req: Request, res: Response) {
         try {
-            const doctor_id = req.params.id
-            const demands = await DemandModel.find({ uuidDoctor: doctor_id }).sort('-createdAt').exec();
-            res.status(200).json(demands);
+            const { doctor_id } = req.params
 
-        } catch (error) {
-            res.status(405).json({ message: error as string });
-        }
-    }
+            if (!doctor_id) {
+                throw new Error("give doctor id");
+            }
 
-    private async updateDemand(patient_id: any, demandDate: any, doctor_id: string, status: StatusDemand) {
-        if (!patient_id || !demandDate) {
-            throw new Error("give patient id and demand date");
-        }
-        await DemandModel.updateOne({ uuidDoctor: doctor_id, uuidPatient: patient_id, demandDate }, { $set: { status } });
-        const updateDemand = await DemandModel.findOne({ uuidDoctor: doctor_id, uuidPatient: patient_id, demandDate });
-        return updateDemand;
-    }
+            const doctor = await DoctorModel.findOne({ uuid: doctor_id })
+            res.status(200).json(doctor);
 
-    async validDemand(req: Request, res: Response) {
-        try {
-            const doctor_id = req.params.id;
-            const { patient_id, demandDate } = req.body
-            const updateDemand = await this.updateDemand(patient_id, demandDate, doctor_id, "validated");
-            res.status(201).json(updateDemand);
-        } catch (error) {
-            res.status(405).json({ message: error as string });
-        }
-    }
-
-    async rejectDemand(req: Request, res: Response) {
-        try {
-            const doctor_id = req.params.id;
-            const { patient_id, demandDate } = req.body
-            const updateDemand = await this.updateDemand(patient_id, demandDate, doctor_id, "rejected");
-            res.status(201).json(updateDemand);
         } catch (error) {
             res.status(405).json({ message: error as string });
         }
