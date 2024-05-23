@@ -1,13 +1,19 @@
 import { Document, Schema, model } from "mongoose";
 
-type StatusDemand = "validated" | "rejected" | "processing";
+export type StatusDemand = "validated" | "rejected" | "processing";
 
-type DemandDocument = Document & {
+export type DemandDocument = Document & {
     uuidPatient: string,
     uuidDoctor: string,
     demandDate: Date,
     meetingDate: Date,
     status: StatusDemand
+}
+
+export type DemandInput = {
+    uuidPatient: string,
+    uuidDoctor: string,
+    meetingDate: Date,
 }
 
 const DemandSchema = new Schema({

@@ -6,6 +6,7 @@ import HospitalRepository from "../repositories/Hospital/repository";
 import { getRoomRepository } from "../repositories/Room";
 import RoomRepository from "../repositories/Room/repository";
 import BaseController from "./base";
+import { DemandInput, DemandModel } from "../models/Demand";
 
 class PatientController extends BaseController {
 
@@ -80,22 +81,48 @@ class PatientController extends BaseController {
     async getVisits(req: Request, res: Response) {
         try {
             const patient_id = req.params.id
-            await this.hospital_rep.getVisits(patient_id);
+            const visits = await this.hospital_rep.getVisits(patient_id);
+            res.status(200).json(visits);
         } catch (error) {
             res.status(405).json({ message: error as string });
         }
     }
 
-    async getDoctorRestrictRoomDemands(req: Request, res: Response) {
+    async getDemands(req: Request, res: Response) {
+        try {
+            const patient_id = req.params.id
+            const demands = await DemandModel.find({ uuidPatient: patient_id }).sort('-createdAt').exec();
+            res.status(200).json(demands);
 
-    }
-
-    async getRoomDemands(req: Request, res: Response) {
-
+        } catch (error) {
+            res.status(405).json({ message: error as string });
+        }
     }
 
     async doDemand(req: Request, res: Response) {
 
+        try {
+            const { mettingDateStr, doctor_id } = req.body
+
+            if (!mettingDateStr) {
+                throw new Error("give metting date");
+            }
+
+            if (!doctor_id) {
+                throw new Error("give doctor id");
+            }
+
+            const input: DemandInput = {
+                meetingDate: new Date(mettingDateStr),
+                uuidPatient: req.params.id,
+                uuidDoctor: doctor_id
+            }
+            const demand = await DemandModel.create(input)
+            res.status(201).json({ demandDate: demand.demandDate });
+
+        } catch (error) {
+            res.status(405).json({ message: error as string });
+        }
     }
 
 }
