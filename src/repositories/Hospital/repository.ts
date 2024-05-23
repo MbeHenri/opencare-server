@@ -1,4 +1,4 @@
-import Patient from "../../models/Patient";
+import { Patient } from "../../models/Patient";
 import User from "../../models/User";
 import Visit from "../../models/Visit";
 
@@ -6,7 +6,7 @@ class HospitalRepository {
 
     async getPatientDetail(patient_id: string): Promise<Patient> {
         return {
-            o3_id: "44588",
+            id: "44588",
             names: "Sarah Taylor",
             gender: "F",
             age: 61,
@@ -22,7 +22,7 @@ class HospitalRepository {
             names: "Jake Doctor",
         };
     }
-    
+
     async getDoctor(person_id: string): Promise<User> {
 
         return {
@@ -30,7 +30,7 @@ class HospitalRepository {
             names: "Jake Doctor",
         };
     }
-    
+
     async getVisits(patient_id: string): Promise<Array<Visit>> {
         return [];
     }

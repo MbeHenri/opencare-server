@@ -1,5 +1,5 @@
 import { O3_BASE64, O3_BASE_URL } from "../env";
-import Patient from "../../models/Patient";
+import { Patient } from "../../models/Patient";
 import User from "../../models/User";
 import Visit from "../../models/Visit";
 import HospitalRepository from "./repository";
@@ -30,7 +30,7 @@ class ProdHospitalRepository extends HospitalRepository {
             .then(result => {
                 const person = result.person;
                 return {
-                    o3_id: result.uuid,
+                    id: result.uuid,
                     names: person.display,
                     gender: person.gender,
                     age: person.age,

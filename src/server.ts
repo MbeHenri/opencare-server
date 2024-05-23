@@ -1,11 +1,17 @@
-import express, { NextFunction, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import mongoose, { ConnectOptions } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { PatientModel as Patient } from "./src/models/Patient";
-import { port, dbURI, key_token, CORS_ALLOW_HOSTS } from "./src/config";
+import { PatientModel as Patient } from "./models/Patient";
+import { port, dbURI, key_token, CORS_ALLOW_HOSTS } from "./config";
+import patientRoutes from "./routes/patient";
+import doctorRoutes from "./routes/doctor";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
+
+//import Routes from "./src/routes";
 
 const app = express();
 const PORT = port;
@@ -73,7 +79,7 @@ app.post("/login", (req, res) => {
 
 app.get("/protected", verifyJWT);
 
-function verifyJWT(req: Request, res: Response, next: NextFunction) {
+function verifyJWT(req: Request, res: Response) {
   const token = req.headers["authorization"]?.split(" ")[1];
   if (token) {
     jwt.verify(token, key_token, (err, decoded) => {
@@ -95,3 +101,41 @@ function verifyJWT(req: Request, res: Response, next: NextFunction) {
     res.status(403).json({ message: "Incorrect Token Given", isLoggedIn: false });
   }
 }
+
+//new Routes(app)
+app.use("/patient", patientRoutes);
+app.use("/doctor", doctorRoutes);
+
+const op = {
+  definition: {
+    openapi: "3.1.0",
+    info: {
+      title: "Opencare API",
+      version: "0.1.0",
+      description:
+        "This is a Opencare API documented with Swagger",
+      license: {
+        name: "MIT",
+        //url: "https://spdx.org/licenses/MIT.html",
+      },
+      contact: {
+        name: "Opencare",
+        url: "https://opencare.com",
+        email: "opencare@email.com",
+      },
+    },
+    servers: [
+      {
+        url: "http://localhost:" + PORT,
+      },
+    ],
+  },
+  apis: ["./routes/*.ts"],
+};
+
+const specs = swaggerJSDoc(op);
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(specs, { explorer: true })
+);

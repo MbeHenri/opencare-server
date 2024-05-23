@@ -29,7 +29,7 @@ const PatientSchema = new mongoose.Schema({
 export const PatientModel = mongoose.model<PatientDocument>("Patient", PatientSchema);
 
 export interface Patient {
-  o3_id: string,
+  id: string,
   names: string,
   gender: string,
   age: number,
