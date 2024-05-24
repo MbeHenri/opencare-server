@@ -26,9 +26,9 @@ class DemandController {
     async doDemand(req: Request, res: Response) {
 
         try {
-            const { metting_date_str, doctor_id } = req.body
+            const { metting_date, doctor_id } = req.body
 
-            if (!metting_date_str) {
+            if (!metting_date) {
                 throw new Error("give metting date");
             }
 
@@ -37,7 +37,7 @@ class DemandController {
             }
 
             const input: DemandInput = {
-                meetingDate: new Date(metting_date_str),
+                meetingDate: new Date(metting_date),
                 uuidPatient: req.params.id,
                 uuidDoctor: doctor_id
             }
@@ -51,8 +51,8 @@ class DemandController {
 
     async validDemand(req: Request, res: Response) {
         try {
-            const { doctor_id, patient_id, demandDate } = req.body
-            const updateDemand = await this.updateDemand(patient_id, demandDate, doctor_id, "validated");
+            const { doctor_id, patient_id, demand_date } = req.body
+            const updateDemand = await this.updateDemand(patient_id, demand_date, doctor_id, "validated");
             res.status(201).json(updateDemand);
         } catch (error) {
             res.status(405).json({ message: error as string });
@@ -61,8 +61,8 @@ class DemandController {
 
     async rejectDemand(req: Request, res: Response) {
         try {
-            const { doctor_id, patient_id, demandDate } = req.body
-            const updateDemand = await this.updateDemand(patient_id, demandDate, doctor_id, "rejected");
+            const { doctor_id, patient_id, demand_date } = req.body
+            const updateDemand = await this.updateDemand(patient_id, demand_date, doctor_id, "rejected");
             res.status(201).json(updateDemand);
         } catch (error) {
             res.status(405).json({ message: error as string });

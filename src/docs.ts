@@ -24,5 +24,5 @@ export const REST_DOCS_OPTIONS = {
             },
         ],
     },
-    apis: ["./routes/*.ts"],
+    apis: ["src/routes/*.ts"],
 };
