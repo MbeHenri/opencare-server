@@ -14,7 +14,7 @@ export default class Routes {
         app.use(
             "/api-docs",
             swaggerUi.serve,
-            swaggerUi.setup(swaggerJSDoc(REST_DOCS_OPTIONS), { explorer: true })
+            swaggerUi.setup(swaggerJSDoc(REST_DOCS_OPTIONS))
         );
     }
 }
