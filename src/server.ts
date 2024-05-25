@@ -49,6 +49,7 @@ app.post("/login", (req, res) => {
         const payload = {
           uuid: patient.uuid,
           username: patient.username,
+          display: patient.person.display
         };
         jwt.sign(
           payload,
@@ -88,7 +89,8 @@ function verifyJWT(req: Request, res: Response) {
       }
       res.json({
         uuid: (decoded as jwt.JwtPayload).uuid,
-        username: (decoded as jwt.JwtPayload).username
+        username: (decoded as jwt.JwtPayload).username,
+        display: (decoded as jwt.JwtPayload).display
       });
 
     });

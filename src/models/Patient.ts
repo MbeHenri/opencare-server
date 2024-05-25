@@ -6,6 +6,9 @@ export type PatientDocument = Document & {
   uuid: string,
   username: string,
   password: string,
+  person: {
+    display: string
+  }
 }
 
 const PatientSchema = new mongoose.Schema({
@@ -22,6 +25,11 @@ const PatientSchema = new mongoose.Schema({
     required: true,
     minlength: 6,
   },
+  person: {
+    display: {
+      type: String
+    }
+  }
 }, {
   collection: 'patients'
 });

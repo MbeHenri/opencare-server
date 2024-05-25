@@ -27,3 +27,8 @@ yarn start
 ```
 
 The application will be launched by [Nodemon](https://nodemon.com). It will restart automatically on file change
+
+## documentation of API
+
+- Link : `http://localhost:3000/api-docs`
+![documentation](images/opencare-api.png)
