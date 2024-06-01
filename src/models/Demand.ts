@@ -4,7 +4,7 @@ export type StatusDemand = "validated" | "rejected" | "processing";
 
 export type DemandDocument = Document & {
     uuidPatient: string,
-    uuidDoctor: string,
+    uuidService: string,
     demandDate: Date,
     meetingDate: Date,
     status: StatusDemand
@@ -12,7 +12,7 @@ export type DemandDocument = Document & {
 
 export type DemandInput = {
     uuidPatient: string,
-    uuidDoctor: string,
+    uuidService: string,
     meetingDate: Date,
 }
 
@@ -21,7 +21,7 @@ const DemandSchema = new Schema({
         type: String,
         //unique: true,
     },
-    uuidDoctor: {
+    uuidService: {
         type: String,
         //unique: true,
     },

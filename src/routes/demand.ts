@@ -8,28 +8,28 @@ import { BaseRouter } from './base';
 *     DemandDo:
 *       type: object
 *       required:
-*         - doctor_id
+*         - service_id
 *         - metting_date
 *       properties:
-*         doctor_id:
+*         service_id:
 *           type: string
-*           description: id of doctor
+*           description: id of service
 *         metting_date:
 *           type: string
 *           description: date of meeting 
 *       example:
-*         doctor_id: fg4sdfgdfg5sdfgdfg
+*         service_id: fg4sdfgdfg5sdfgdfg
 *         metting_date: 2024-30-07
 *
 *     StateDemand:
 *       type: object
 *       required:
-*         - doctor_id
+*         - service_id
 *         - metting_date
 *       properties:
-*         doctor_id:
+*         service_id:
 *           type: string
-*           description: id of doctor
+*           description: id of service
 *         patient_id:
 *           type: string
 *           description: id of patient
@@ -37,7 +37,7 @@ import { BaseRouter } from './base';
 *           type: string
 *           description: date of meeting 
 *       example:
-*         doctor_id: fgddfgdfg5gzdfgdfg
+*         service_id: fgddfgdfg5gzdfgdfg
 *         patient_id: fg4sdfgdfg5sdfgdfg
 *         metting_date: 2024-30-07
 *
@@ -68,10 +68,10 @@ class DemandRouter extends BaseRouter {
          *         required: true
          *         description: The demand id
          *       - in: query
-         *         name: doctor_id
+         *         name: service_id
          *         schema:
          *           type: string
-         *         description: The doctor id
+         *         description: The service id
          *       - in: query
          *         name: patient_id
          *         schema:
@@ -87,7 +87,7 @@ class DemandRouter extends BaseRouter {
 
         /**
          * @swagger
-         * /demand/do:
+         * /demand/create:
          *   post:
          *     summary: do a demand for meeting
          *     tags: [Demand]
@@ -102,7 +102,7 @@ class DemandRouter extends BaseRouter {
          *       405:
          *         description: Error
          */
-        this.router.post('/do', this.controller.doDemand);
+        this.router.post('/create', this.controller.doDemand);
 
         /**
          * @swagger

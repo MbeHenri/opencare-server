@@ -10,7 +10,7 @@ export default class Routes {
     static register(app: Application) {
         app.use("/patient", patientRoutes);
         app.use("/doctor", doctorRoutes);
-        app.use("/emand", DemandRoutes);
+        app.use("/demand", DemandRoutes);
         app.use(
             "/api-docs",
             swaggerUi.serve,
