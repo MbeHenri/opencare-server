@@ -6,7 +6,6 @@ import BaseController from "./base";
 import HospitalRepository from "../repositories/Hospital/repository";
 import { getHospitalRepository } from "../repositories/Hospital";
 import { Request, Response } from "express";
-import { DemandModel, StatusDemand } from "../models/Demand";
 import { DoctorModel } from "../models/Doctor";
 
 class DoctorController extends BaseController {
@@ -69,7 +68,7 @@ class DoctorController extends BaseController {
         try {
             const doctor_id = req.params.id;
             const { patient_id } = req.query;
-            
+
             const rooms = (await this.room_rep.getRelatedRooms(`${TALK_USER}`, `${TALK_PASSWORD}`))
                 .filter((element) => {
                     return patient_id ?

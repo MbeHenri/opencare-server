@@ -1,11 +1,11 @@
-import DemandController from '../controllers/demand';
+import ServiceController from '../controllers/service';
 import { BaseRouter } from './base';
 
 /**
 * @swagger
 * components:
 *   schemas:
-*     DemandDo:
+*     ServiceInput:
 *       type: object
 *       required:
 *         - service_id
@@ -21,7 +21,7 @@ import { BaseRouter } from './base';
 *         service_id: fg4sdfgdfg5sdfgdfg
 *         patient_id: fg4sdfgdfg5sdfgdfg
 *
-*     StateDemand:
+*     FullServiceInput:
 *       type: object
 *       required:
 *         - service_id
@@ -47,27 +47,22 @@ import { BaseRouter } from './base';
 /**
  * @swagger
  * tags:
- *   name: Demand
- *   description: The demand managing API
+ *   name: Service
+ *   description: The Service managing API
 */
-class DemandRouter extends BaseRouter {
-    controller: DemandController;
+
+class ServiceRouter extends BaseRouter {
+    controller: ServiceController;
     intializeRoutes() {
-        this.controller = new DemandController();
+        this.controller = new ServiceController();
 
         /**
          * @swagger
-         * /demand:
+         * /service:
          *   get:
-         *     summary: Get list of the demand
-         *     tags: [Demand]
+         *     summary: Get list of the service
+         *     tags: [Service]
          *     parameters:
-         *       - in: path
-         *         name: id
-         *         schema:
-         *           type: string
-         *         required: true
-         *         description: The demand id
          *       - in: query
          *         name: service_id
          *         schema:
@@ -80,70 +75,52 @@ class DemandRouter extends BaseRouter {
          *         description: The patient id
          *     responses:
          *       200:
-         *         description: The demand
+         *         description: The service
          *       405:
          *         description: Error
          */
-        this.router.get('', this.controller.getDemands);
+        this.router.get('', this.controller.getRoomServices);
 
         /**
          * @swagger
-         * /demand/create:
+         * /service/doctor:
          *   post:
-         *     summary: do a demand for meeting
-         *     tags: [Demand]
+         *     summary: Change doctor allow to a patient for a service
+         *     tags: [Service]
          *     requestBody:
          *       content:
          *         application/json:
          *           schema:
-         *             $ref: '#/components/schemas/DemandDo'
+         *             $ref: '#/components/schemas/FullServiceInput'
          *     responses:
          *       201:
-         *         description: The list of patient
+         *         description: Update is a success
          *       405:
          *         description: Error
          */
-        this.router.post('/create', this.controller.doDemand);
+        this.router.post('/doctor', this.controller.updateDoctorRoomService);
 
         /**
          * @swagger
-         * /demand/validate:
-         *   put:
-         *     summary: validate a demand
-         *     tags: [Demand]
+         * /service/pay:
+         *   post:
+         *     summary: Update room service after payment doctor
+         *     tags: [Service]
          *     requestBody:
          *       content:
          *         application/json:
          *           schema:
-         *             $ref: '#/components/schemas/StateDemand'
+         *             $ref: '#/components/schemas/ServiceInput'
          *     responses:
          *       201:
-         *         description: demand is validated
+         *         description: Update is a success
          *       405:
          *         description: Error
          */
-        this.router.put('/validate', this.controller.validDemand);
+        this.router.post('/pay', this.controller.updateDoctorRoomService);
 
-        /**
-         * @swagger
-         * /demand/reject:
-         *   put:
-         *     summary: reject a demand
-         *     tags: [Demand]
-         *     requestBody:
-         *       content:
-         *         application/json:
-         *           schema:
-         *             $ref: '#/components/schemas/DemandDo'
-         *     responses:
-         *       201:
-         *         description: demand is rejected
-         *       405:
-         *         description: Error
-         */
-        this.router.put('/reject', this.controller.rejectDemand);
     }
 }
 
-const DemandRoutes = new DemandRouter().router;
-export default DemandRoutes
+const ServiceRoutes = new ServiceRouter().router;
+export default ServiceRoutes

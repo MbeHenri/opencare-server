@@ -6,14 +6,12 @@ export type DemandDocument = Document & {
     uuidPatient: string,
     uuidService: string,
     demandDate: Date,
-    meetingDate: Date,
     status: StatusDemand
 }
 
 export type DemandInput = {
     uuidPatient: string,
     uuidService: string,
-    meetingDate: Date,
 }
 
 const DemandSchema = new Schema({
@@ -28,10 +26,6 @@ const DemandSchema = new Schema({
     demandDate: {
         type: Date,
         default: new Date()
-    },
-    meetingDate: {
-        type: Date,
-        required: true,
     },
     status: {
         type: String,

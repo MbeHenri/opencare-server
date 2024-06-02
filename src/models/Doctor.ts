@@ -8,11 +8,15 @@ export interface Doctor {
     url_room: string,
 }
 
+
 export type DoctorDocument = Document & {
     uuid: string,
     names: string,
     speciality: string,
     presentation: string,
+    notes: {
+        value: number
+    }[]
 }
 
 const DoctorSchema = new Schema({
@@ -31,6 +35,10 @@ const DoctorSchema = new Schema({
         type: String,
         default: ""
     },
+    notes: [{
+        type: Number,
+    }]
+
 }, {
     collection: 'doctors'
 });

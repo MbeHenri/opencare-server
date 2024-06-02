@@ -6,7 +6,6 @@ import HospitalRepository from "../repositories/Hospital/repository";
 import { getRoomRepository } from "../repositories/Room";
 import RoomRepository from "../repositories/Room/repository";
 import BaseController from "./base";
-import { DemandInput, DemandModel } from "../models/Demand";
 
 class PatientController extends BaseController {
 
