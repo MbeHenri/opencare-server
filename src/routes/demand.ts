@@ -36,11 +36,15 @@ import { BaseRouter } from './base';
 *           description: id of patient
 *         doctor_id:
 *           type: string
+*           description: id of doctor
+*         date_meeting:
+*           type: string
 *           description: date of meeting 
 *       example:
 *         service_id: fgddfgdfg5gzdfgdfg
 *         patient_id: fg4sdfgdfg5sdfgdfg
 *         doctor_id: fg4sdfgdfg5sdfgdfg
+*         date_meeting: 2024-06-04T08:07:51
 *
 */
 

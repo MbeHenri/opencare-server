@@ -58,9 +58,9 @@ class ServiceRouter extends BaseRouter {
 
         /**
          * @swagger
-         * /service:
+         * /service/room:
          *   get:
-         *     summary: Get list of the service
+         *     summary: Get list of the room service relaled of a patient
          *     tags: [Service]
          *     parameters:
          *       - in: query
@@ -73,17 +73,22 @@ class ServiceRouter extends BaseRouter {
          *         schema:
          *           type: string
          *         description: The patient id
+         *       - in: query
+         *         name: status
+         *         schema:
+         *           type: string
+         *         description: The status ("pay" or "unpay")
          *     responses:
          *       200:
          *         description: The service
          *       405:
          *         description: Error
          */
-        this.router.get('', this.controller.getRoomServices);
+        this.router.get('/room', this.controller.getRoomServices);
 
         /**
          * @swagger
-         * /service/doctor:
+         * /service/room/doctor:
          *   post:
          *     summary: Change doctor allow to a patient for a service
          *     tags: [Service]
@@ -98,13 +103,13 @@ class ServiceRouter extends BaseRouter {
          *       405:
          *         description: Error
          */
-        this.router.post('/doctor', this.controller.updateDoctorRoomService);
+        this.router.post('/room/doctor', this.controller.updateDoctorRoomService);
 
         /**
          * @swagger
-         * /service/pay:
+         * /service/room/pay:
          *   post:
-         *     summary: Update room service after payment doctor
+         *     summary: Update room service with payment
          *     tags: [Service]
          *     requestBody:
          *       content:
@@ -117,7 +122,7 @@ class ServiceRouter extends BaseRouter {
          *       405:
          *         description: Error
          */
-        this.router.post('/pay', this.controller.updateDoctorRoomService);
+        this.router.post('/room/pay', this.controller.payRoomService);
 
     }
 }

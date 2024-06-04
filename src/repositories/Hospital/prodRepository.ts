@@ -4,6 +4,7 @@ import User from "../../models/User";
 import Visit from "../../models/Visit";
 import HospitalRepository from "./repository";
 import { BadResponse } from "../errors";
+import { log } from "console";
 
 
 class ProdHospitalRepository extends HospitalRepository {
@@ -70,6 +71,36 @@ class ProdHospitalRepository extends HospitalRepository {
         return result;
     }
 
+    async getDoctors(): Promise<Array<User>> {
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Basic ${O3_BASE64}`);
+
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+        let doctors: Array<User> = [];
+        await fetch(`${O3_BASE_URL}/provider?v=custom:(person:(uuid,display))`, requestOptions)
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+                throw new BadResponse()
+            })
+            .then(({ results }) => {
+                const data: Array<any> = results
+                data.forEach((doctor) => {
+                    doctors.push(
+                        {
+                            id: doctor.person.uuid,
+                            names: doctor.person.display,
+                        }
+                    )
+                })
+            })
+        return doctors;
+    }
+
     async getDoctor(person_id: string): Promise<User> {
         let myHeaders = new Headers();
         myHeaders.append("Authorization", `Basic ${O3_BASE64}`);
@@ -113,24 +144,23 @@ class ProdHospitalRepository extends HospitalRepository {
                 }
                 throw new BadResponse()
             })
-            .then(result => {
-                const data: Array<any> = result
-
-                data.forEach(({ visit }) => {
+            .then(({ results }) => {
+                const data: Array<any> = results;
+                data.forEach((element) => {
                     visits.push(
                         {
-                            type: visit.visitType.display as string,
-                            startDate: new Date(visit.startDatetime as string),
-                            stopDate: new Date(visit.stopDatetime as string),
-                            encounterDate: new Date(visit.encounterDatetime as string),
-                            observations: (visit.obs as Array<any>).map(ob => {
+                            type: element.visit.visitType.display as string,
+                            startDate: new Date(element.visit.startDatetime as string),
+                            stopDate: new Date(element.visit.stopDatetime as string),
+                            encounterDate: new Date(element.encounterDatetime as string),
+                            observations: (element.obs as Array<any>).map(ob => {
                                 return {
                                     name: ob.concept.display as string,
                                     date: new Date(ob.obsDatetime as string),
                                     value: ob.value
                                 }
                             }),
-                            encounters: (visit.encounters as Array<any>).map(
+                            encounters: (element.visit.encounters as Array<any>).map(
                                 encounter => {
                                     return {
                                         name: encounter.display as string,

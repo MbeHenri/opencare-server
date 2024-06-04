@@ -14,7 +14,7 @@ export const O3_BASE64 = base64(`${O3_USER}:${O3_PASSWORD}`);
 export const TALK_USER = process.env.TALK_USER;
 export const TALK_PASSWORD = process.env.TALK_PASSWORD;
 export const TALK_PORT = process.env.TALK_PORT;
-export const TALK_HOST = process.env.TALK_PASSWORD;
+export const TALK_HOST = process.env.TALK_HOST;
 
 export const TALK_BASE64 = base64(`${TALK_USER}:${TALK_PASSWORD}`);
 

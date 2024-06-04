@@ -24,6 +24,10 @@ class HospitalRepository {
         };
     }
 
+    async getDoctors(): Promise<Array<User>> { 
+        return [];
+    }
+
     async getDoctor(person_id: string): Promise<User> {
 
         return {
@@ -40,14 +44,6 @@ class HospitalRepository {
         return {
             name: "Pédiatrie",
             uuid
-        };
-    }
-
-    async getFullService(uuid: string): Promise<FullService> {
-        return {
-            name: "Pédiatrie",
-            uuid,
-            doctors: []
         };
     }
 

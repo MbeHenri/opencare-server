@@ -28,14 +28,15 @@ class ProdRoomRepository extends RoomRepository {
             body: raw,
         };
 
-        const response = await fetch(`${NC_BASE_URL}/cloud/users`, requestOptions);
+        const response = await fetch(`${NC_BASE_URL}/cloud/users`, requestOptions)
 
         if (response.status === 400 || response.ok) {
+
             if (response.status === 400) {
                 const data = await response.json()
-                const status = data.ocs.statuscode as number
+                const status = data.ocs.meta.statuscode as number
 
-                if (status !== 102) {
+                if (status != 102) {
                     throw new BadResponse()
                 }
             }
@@ -61,7 +62,6 @@ class ProdRoomRepository extends RoomRepository {
             headers: myHeaders,
             body: formdata,
         };
-
         const room: Room = await fetch(`${TALK_BASE_URL}/room`, requestOptions)
             .then(response => {
                 if (response.ok) {
@@ -70,6 +70,7 @@ class ProdRoomRepository extends RoomRepository {
                 throw new BadResponse()
             })
             .then(result => {
+
                 const data = result.ocs.data;
                 return { token: data.token, name: data.displayName }
             })
@@ -100,7 +101,6 @@ class ProdRoomRepository extends RoomRepository {
                 throw new BadResponse()
             })
     }
-
 
     async getRelatedRooms(user_id: string, password: string): Promise<Array<Room>> {
         var myHeaders = new Headers();
@@ -212,34 +212,18 @@ class ProdRoomRepository extends RoomRepository {
         return participants;
     }
 
-    async addRoomParticipant(user_id: string, token_room: string): Promise<void> {
 
-        const myHeaders = new Headers();
-        myHeaders.append("OCS-APIRequest", "true");
-        myHeaders.append("Accept", "application/json");
-        myHeaders.append("Authorization", `Basic ${TALK_BASE64}}`);
-
-        const formdata = new FormData();
-        formdata.append("newParticipant", user_id);
-
-        const requestOptions = {
-            method: "POST",
-            headers: myHeaders,
-            body: formdata,
-        };
-
-        await fetch(`${TALK_BASE_URL}/room/${token_room}/participants`, requestOptions)
-            .then(response => {
-                if (response.ok) {
-                    return response.json()
-                }
-                throw new BadResponse()
-            })
-
-    }
-    
     async getPasswordUser(user_id: string): Promise<string> {
         return `${TALK_BASE_PASSWORD}`;
+    }
+
+    async addParticipant(id: string, name: string, token: string): Promise<void> {
+        try {
+            const password = await this.getPasswordUser(id);
+            await this.createUser(id, name, password);
+            await this.addUserInRoom(token, id);
+
+        } catch (error) { }
     }
 }
 

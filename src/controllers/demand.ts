@@ -1,13 +1,10 @@
 import { Request, Response } from "express";
 import { DemandInput, DemandModel } from "../models/Demand";
-import HospitalRepository from "../repositories/Hospital/repository";
-import { getHospitalRepository } from "../repositories/Hospital";
 import User from "../models/User";
 import { RoomServiceModel } from "../models/Room";
+import { hospital_rep } from "../repositories";
 
 class DemandController {
-
-    hospital_rep: HospitalRepository = getHospitalRepository("good");
 
     async getDemands(req: Request, res: Response) {
         try {
@@ -28,16 +25,16 @@ class DemandController {
                 const element = demands[i];
 
                 const demand = {
-                    patient: (await this.hospital_rep.getPatientDetail(element.uuidPatient)) as User,
-                    service: (await this.hospital_rep.getService(element.uuidService)).name,
+                    patient: (await hospital_rep.getPatientDetail(element.uuidPatient)) as User,
+                    service: (await hospital_rep.getService(element.uuidService)).name,
                     status: element.status
                 }
                 output.push(demand)
             }
-            res.status(200).json(output);
+            res.status(200).json({ results: output });
 
         } catch (error) {
-            res.status(405).json({ message: error as string });
+            res.status(405).json({ message: error });
         }
     }
 
@@ -48,6 +45,10 @@ class DemandController {
 
             if (!service_id) {
                 throw new Error("give service id");
+            }
+
+            if (!patient_id) {
+                throw new Error("give patient id");
             }
 
             let demand = await DemandModel.findOne({
@@ -70,13 +71,13 @@ class DemandController {
             }
 
         } catch (error) {
-            res.status(405).json({ message: error as string });
+            res.status(405).json({ message: error });
         }
     }
 
     async validDemand(req: Request, res: Response) {
         try {
-            const { service_id, patient_id, doctor_id } = req.body
+            const { service_id, patient_id, doctor_id, date_meeting } = req.body
 
             if (!service_id) {
                 throw new Error("give service id");
@@ -94,16 +95,25 @@ class DemandController {
             })
 
             if (!room_service) {
-                room_service = await RoomServiceModel.create({
+                const input = {
                     uuidPatient: patient_id,
                     uuidService: service_id,
-                    uuidDoctor: doctor_id,
-                });
+                    uuidDoctor: doctor_id
+                }
+                if (date_meeting) {
+                    input["date_meeting"] = date_meeting
+                }
+
+                room_service = await RoomServiceModel.create(input);
             }
             await DemandModel.updateOne({ uuidService: service_id, uuidPatient: patient_id }, { $set: { status: "validated" } });
-            res.status(201).json(room_service);
+            //demand = await DemandModel.findOne({ uuidService: service_id, uuidPatient: patient_id });
+            res.status(201).json({
+                status: "validated"
+            });
+
         } catch (error) {
-            res.status(405).json({ message: error as string });
+            res.status(405).json({ message: error });
         }
     }
 
@@ -117,11 +127,21 @@ class DemandController {
             if (!patient_id) {
                 throw new Error("give patient id");
             }
-            await DemandModel.updateOne({ uuidService: service_id, uuidPatient: patient_id }, { $set: { status: "rejected" } });
-            const updateDemand = await DemandModel.findOne({ uuidService: service_id, uuidPatient: patient_id });
-            res.status(201).json(updateDemand);
+
+            let room_service = await RoomServiceModel.findOne({
+                uuidPatient: patient_id,
+                uuidService: service_id
+            })
+
+            if (room_service) {
+                res.status(408).json({ message: "demand don't reject because this patient have already validated for this service" });
+            } else {
+                await DemandModel.updateOne({ uuidService: service_id, uuidPatient: patient_id }, { $set: { status: "rejected" } });
+                //const updateDemand = await DemandModel.findOne({ uuidService: service_id, uuidPatient: patient_id });
+                res.status(201).json({ status: "rejected" });
+            }
         } catch (error) {
-            res.status(405).json({ message: error as string });
+            res.status(405).json({ message: error });
         }
     }
 

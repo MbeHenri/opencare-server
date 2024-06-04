@@ -8,7 +8,6 @@ import { BaseRouter } from './base';
  *   description: The patient managing API
 */
 
-
 class PatientRouter extends BaseRouter {
     controller: PatientController;
 
@@ -36,27 +35,6 @@ class PatientRouter extends BaseRouter {
          */
         this.router.get('/:id', this.controller.getPatient);
 
-        /**
-         * @swagger
-         * /patient/{id}/doctor:
-         *   get:
-         *     summary: Get related doctors by meeting 
-         *     tags: [Patient]
-         *     parameters:
-         *       - in: path
-         *         name: id
-         *         schema:
-         *           type: string
-         *         required: true
-         *         description: The patient id
-         *     responses:
-         *       200:
-         *         description: The list of doctor
-         *       405:
-         *         description: Error
-         */
-        this.router.get('/:id/doctor', this.controller.getRelatedDoctors);
-        
         /**
          * @swagger
          * /patient/{id}/visit:

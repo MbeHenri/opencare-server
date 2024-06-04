@@ -1,27 +1,25 @@
 import { Request, Response } from "express";
-import HospitalRepository from "../repositories/Hospital/repository";
-import { getHospitalRepository } from "../repositories/Hospital";
 import { RoomServiceModel } from "../models/Room";
-import RoomRepository from "../repositories/Room/repository";
-import { getRoomRepository } from "../repositories/Room";
 import { PatientModel } from "../models/Patient";
-import { DoctorModel } from "../models/Doctor";
+import { hospital_rep, room_rep } from "../repositories";
 
 class ServiceController {
-
-    hospital_rep: HospitalRepository = getHospitalRepository("good");
-    room_rep: RoomRepository = getRoomRepository("good");
 
     async getRoomServices(req: Request, res: Response) {
         try {
             const uuidService = req.query.service_id
             const uuidPatient = req.query.patient_id
+            const status = req.query.status
             const filter = {};
+
             if (uuidService) {
                 filter["uuidService"] = uuidService
             }
             if (uuidPatient) {
                 filter["uuidPatient"] = uuidPatient
+            }
+            if (status && (["pay", "unpay"].includes(status as string))) {
+                filter["status"] = status == "pay" ? "pay" : "unpay"
             }
 
             const room_services = await RoomServiceModel.find(filter).sort('-dateMeeting').exec();
@@ -31,12 +29,12 @@ class ServiceController {
                 const room = {
                     service: {
                         id: element.uuidService,
-                        name: (await this.hospital_rep.getService(element.uuidService)).name,
+                        name: (await hospital_rep.getService(element.uuidService)).name,
                     },
                     dateMeeting: element.dateMeeting,
                     status: element.status,
-                    token: element.tokenRoom,
-                    patient: (await this.hospital_rep.getPatientDetail(element.uuidPatient))
+                    tokenRoom: element.tokenRoom == "" ? null : element.tokenRoom,
+                    patient: (await hospital_rep.getPatientDetail(element.uuidPatient))
                 };
                 output.push(room)
             }
@@ -67,33 +65,18 @@ class ServiceController {
 
             if (room_service) {
 
+                const doctor = await hospital_rep.getDoctor(doctor_id)
                 if (room_service.tokenRoom != "") {
-                    const patient = await PatientModel.findOne({ uuid: patient_id })
-                    if (!patient) {
-                        throw new Error("patient don't exist");
-                    }
-                    this.addParticipant(room_service.uuidDoctor, patient.person.display, room_service.tokenRoom)
-
-                    const doctor = await DoctorModel.findOne({ uuid: room_service.uuidDoctor })
-                    if (!doctor) {
-                        throw new Error("doctor don't exist");
-                    }
-                    this.addParticipant(room_service.uuidDoctor, doctor.names, room_service.tokenRoom)
+                    // on ajte le docteur dans la salle de reunion patient-service si elle existe
+                    await room_rep.addParticipant(room_service.uuidDoctor, doctor.names, room_service.tokenRoom)
                 }
-
-                await RoomServiceModel.updateOne(
-                    { uuidPatient: patient_id, uuidService: service_id },
+                await room_service.updateOne(
                     {
                         $set: { uuidDoctor: doctor_id }
                     }
                 )
+                res.status(201).json(doctor);
 
-                room_service = await RoomServiceModel.findOne({
-                    uuidPatient: patient_id,
-                    uuidService: service_id,
-                })
-
-                res.status(201).json(room_service);
             } else {
                 res.status(404).json({ message: "room service don't exist" });
             }
@@ -124,42 +107,27 @@ class ServiceController {
 
                     // créer la reunion si néccessaire
                     let tokenRoom = room_service.tokenRoom
-                    const service = await this.hospital_rep.getService(room_service.uuidService)
+                    const service = await hospital_rep.getService(room_service.uuidService)
                     const patient = await PatientModel.findOne({ uuid: patient_id })
                     if (!patient) {
                         throw new Error("patient don't exist");
                     }
-                    const doctor = await DoctorModel.findOne({ uuid: room_service.uuidDoctor })
-                    if (!doctor) {
-                        throw new Error("doctor don't exist");
+
+                    const doctor = await hospital_rep.getDoctor(room_service.uuidDoctor)
+
+                    if (tokenRoom == "") {
+                        tokenRoom = (await room_rep.createRoom(`${service.name} (${patient.person.display} - ${patient.username}) `)).token
+                        // construction des comptes Talk du docteur et du patient si néccessaire
+                        await room_rep.addParticipant(patient.id, patient.person.display, tokenRoom)
+                        await room_rep.addParticipant(service.uuid, doctor.names, tokenRoom)
                     }
 
-                    if (room_service.tokenRoom == "") {
-                        tokenRoom = (await this.room_rep.createRoom(`Espace de consultation de ${service.name} du patient ${patient.username} `)).token
-                    }
-
-                    // construction des comptes Talk du docteur et du patient si néccessaire
-                    this.addParticipant(patient_id, patient.person.display, tokenRoom)
-                    this.addParticipant(room_service.uuidDoctor, doctor.names, tokenRoom)
-
-                    // Signaler que le service a été payé
-                    await RoomServiceModel.updateOne({
-                        uuidPatient: patient_id,
-                        uuidService: service_id,
-                    }, {
-                        $set: {
-                            status: "pay"
-                        }
-                    })
-                    room_service = await RoomServiceModel.findOne({
-                        uuidPatient: patient_id,
-                        uuidService: service_id,
-                    });
-
-                    res.status(201).json(room_service);
+                    // signaler que le service a été payé et qu'un espace de consultation a été crée
+                    await room_service.updateOne({ $set: { status: "pay", tokenRoom } })
+                    res.status(201).json({ status: "pay", tokenRoom });
 
                 } else {
-                    res.status(201).json({ message: "room service is already pay" });
+                    res.status(202).json({ status: room_service.status, tokenRoom: room_service.tokenRoom });
                 }
             } else {
                 res.status(404).json({ message: "room service don't exist" });
@@ -167,15 +135,6 @@ class ServiceController {
         } catch (error) {
             res.status(405).json({ message: error as string });
         }
-    }
-
-    async addParticipant(id: string, name: string, token: string): Promise<void> {
-        try {
-            const password = await this.room_rep.getPasswordUser(id);
-            await this.room_rep.createUser(id, name, password);
-            await this.room_rep.addRoomParticipant(id, token);
-
-        } catch (error) { }
     }
 }
 

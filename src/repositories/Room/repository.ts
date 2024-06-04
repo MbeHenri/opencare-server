@@ -36,7 +36,7 @@ class RoomRepository {
         return [];
     }
 
-    async addRoomParticipant(user_id: string, token_room: string): Promise<void> { }
+    async addParticipant(id: string, name: string, token: string): Promise<void> { }
 }
 
 export default RoomRepository;
