@@ -1,0 +1,38 @@
+base: http://localhost:8011/openmrs/ws
+
+- general 
+/fhir2/R4/Patient/66c87fe5-6f31-46d8-bcb3-3e77c99563d0?_summary=data
+/patient/66c87fe5-6f31-46d8-bcb3-3e77c99563d0
+
+- vitals and biometrics
+/fhir2/R4/Observation?subject:Patient=66c87fe5-6f31-46d8-bcb3-3e77c99563d0&code=5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%2C5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%2C1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&_summary=data&_sort=-date&_count=100
+/fhir2/R4/Observation?subject:Patient=66c87fe5-6f31-46d8-bcb3-3e77c99563d0&code=5085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%2C5086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%2C5087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%2C5088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%2C5092AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%2C5242AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%2C165095AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA&_summary=data&_sort=-date&_count=100
+
+-medications
+/rest/v1/order?patient=66c87fe5-6f31-46d8-bcb3-3e77c99563d0&careSetting=6f0c9a92-6f24-11e3-af88-005056821db0&status=ACTIVE&orderType=131168f4-15f5-102d-96e4-000c29c2a5d7&v=custom:(uuid,dosingType,orderNumber,accessionNumber,patient:ref,action,careSetting:ref,previousOrder:ref,dateActivated,scheduledDate,dateStopped,autoExpireDate,orderType:ref,encounter:ref,orderer:(uuid,display,person:(display)),orderReason,orderReasonNonCoded,orderType,urgency,instructions,commentToFulfiller,drug:(uuid,display,strength,dosageForm:(display,uuid),concept),dose,doseUnits:ref,frequency:ref,asNeeded,asNeededCondition,quantity,quantityUnits:ref,numRefills,dosingInstructions,duration,durationUnits:ref,route:ref,brandName,dispenseAsWritten)
+
+-results viewer
+/rest/v1/concept/790AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA?v=full
+
+-visits
+/rest/v1/visit?patient=66c87fe5-6f31-46d8-bcb3-3e77c99563d0&v=custom:(uuid,encounters:(uuid,encounterDatetime,form:(uuid,name),location:ref,encounterType:ref,encounterProviders:(uuid,display,provider:(uuid,display))),patient:(uuid,uuid),visitType:(uuid,name,display),attributes:(uuid,display,attributeType:(name,datatypeClassname,uuid),value),location:(uuid,name,display),startDatetime,stopDatetime)&includeInactive=false
+/rest/v1/visit-queue-entry?v=full&patient=66c87fe5-6f31-46d8-bcb3-3e77c99563d0
+
+-Allergies
+/fhir2/R4/AllergyIntolerance?patient=66c87fe5-6f31-46d8-bcb3-3e77c99563d0&_summary=data
+
+-conditions
+/fhir2/R4/Condition?patient=66c87fe5-6f31-46d8-bcb3-3e77c99563d0&_count=100&_summary=data
+
+-Immunizations
+/fhir2/R4/Immunization?patient=66c87fe5-6f31-46d8-bcb3-3e77c99563d0&_summary=data
+
+-Attachments
+/rest/v1/attachment?patient=66c87fe5-6f31-46d8-bcb3-3e77c99563d0&includeEncounterless=true
+
+-Programs
+/rest/v1/programenrollment?patient=66c87fe5-6f31-46d8-bcb3-3e77c99563d0&v=custom:(uuid,display,program,dateEnrolled,dateCompleted,location:(uuid,display))
+/rest/v1/program?v=custom:(uuid,display,allWorkflows,concept:(uuid,display))
+
+-Appointments
+/rest/v1/appointments/search [POST* patientUuid:"66c87fe5-6f31-46d8-bcb3-3e77c99563d0", startDate: "2023-12-07T11:13:26.111Z"]

@@ -8,6 +8,7 @@ const O3_HOST = process.env.O3_HOST;
 
 export const O3_BASE_SECURE_URL = `https://${O3_HOST}${O3_PORT ? `:${O3_PORT}` : ""}/openmrs/ws/rest/v1`;
 export const O3_BASE_URL = `http://${O3_HOST}${O3_PORT ? `:${O3_PORT}` : ""}/openmrs/ws/rest/v1`;
+export const O3_BASEF_URL = `http://${O3_HOST}${O3_PORT ? `:${O3_PORT}` : ""}/openmrs/ws/fhir2/R4`;
 export const O3_BASE64 = base64(`${O3_USER}:${O3_PASSWORD}`);
 
 // Talk env variables

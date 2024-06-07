@@ -24,7 +24,7 @@ class HospitalRepository {
         };
     }
 
-    async getDoctors(): Promise<Array<User>> { 
+    async getDoctors(): Promise<Array<User>> {
         return [];
     }
 
@@ -45,6 +45,39 @@ class HospitalRepository {
             name: "Pédiatrie",
             uuid
         };
+    }
+
+
+    async getConcept(code: string): Promise<any> {
+        return;
+    }
+
+    async getObservations(patient_id: string): Promise<Array<any>> {
+        return [];
+    }
+
+    async getMedications(patient_id: string): Promise<Array<any>> {
+        return [];
+    }
+
+    async getAllergies(patient_id: string): Promise<Array<any>> {
+        return [];
+    }
+
+    async getConditions(patient_id: string): Promise<Array<any>> {
+        return [];
+    }
+
+    async getImmunizations(patient_id: string): Promise<Array<any>> {
+        return [];
+    }
+
+    async getAttachments(patient_id: string): Promise<Array<any>> {
+        return [];
+    }
+
+    async getPrograms(patient_id: string): Promise<Array<any>> {
+        return [];
     }
 
 }

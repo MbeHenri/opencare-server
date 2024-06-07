@@ -1,10 +1,9 @@
-import { O3_BASE64, O3_BASE_URL } from "../env";
+import { O3_BASE64, O3_BASEF_URL, O3_BASE_URL } from "../env";
 import { Patient } from "../../models/Patient";
 import User from "../../models/User";
 import Visit from "../../models/Visit";
 import HospitalRepository from "./repository";
 import { BadResponse } from "../errors";
-import { log } from "console";
 
 
 class ProdHospitalRepository extends HospitalRepository {
@@ -20,7 +19,6 @@ class ProdHospitalRepository extends HospitalRepository {
             headers: myHeaders,
         };
 
-        //console.log(O3_BASE_URL);
         const result: Patient = await fetch(`${O3_BASE_URL}/patient/${patient_id}?v=full`, requestOptions)
             .then(response => {
                 if (response.ok) {
@@ -174,6 +172,170 @@ class ProdHospitalRepository extends HospitalRepository {
             })
 
         return visits;
+    }
+
+
+    async getConcept(code: string): Promise<any> {
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Basic ${O3_BASE64}`);
+
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+
+        return await fetch(`${O3_BASE_URL}/concept/${code}`, requestOptions)
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+                throw new BadResponse()
+            })
+    }
+
+    async getObservations(patient_id: string): Promise<Array<any>> {
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Basic ${O3_BASE64}`);
+
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+
+        return await fetch(`${O3_BASEF_URL}/Observation?subject:Patient=${patient_id}&_summary=data&_sort=-date&_count=100`, requestOptions)
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+                throw new BadResponse()
+            }).then((data) => {
+                return data.entry
+            })
+    }
+
+    async getMedications(patient_id: string): Promise<Array<any>> {
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Basic ${O3_BASE64}`);
+
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+
+        //console.log(O3_BASE_URL);
+        return await fetch(`${O3_BASE_URL}/order?patient=${patient_id}&status=ACTIVE&v=custom:(uuid,dosingType,orderNumber,accessionNumber,patient:ref,action,careSetting:ref,previousOrder:ref,dateActivated,scheduledDate,dateStopped,autoExpireDate,orderType:ref,encounter:ref,orderer:(uuid,display,person:(display)),orderReason,orderReasonNonCoded,orderType,urgency,instructions,commentToFulfiller,drug:(uuid,display,strength,dosageForm:(display,uuid),concept),dose,doseUnits:ref,frequency:ref,asNeeded,asNeededCondition,quantity,quantityUnits:ref,numRefills,dosingInstructions,duration,durationUnits:ref,route:ref,brandName,dispenseAsWritten)`, requestOptions)
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+                throw new BadResponse()
+            }).then((data) => {
+                return data.results
+            })
+    }
+
+    async getAllergies(patient_id: string): Promise<Array<any>> {
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Basic ${O3_BASE64}`);
+
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+
+        //console.log(O3_BASE_URL);
+        return await fetch(`${O3_BASEF_URL}/AllergyIntolerance?patient=${patient_id}&_summary=data`, requestOptions)
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+                throw new BadResponse()
+            }).then((data) => {
+                return data.entry
+            })
+    }
+
+    async getConditions(patient_id: string): Promise<Array<any>> {
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Basic ${O3_BASE64}`);
+
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+
+        //console.log(O3_BASE_URL);
+        return await fetch(`${O3_BASEF_URL}/Condition?patient=${patient_id}&_summary=data`, requestOptions)
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+                throw new BadResponse()
+            }).then((data) => {
+                return data.entry
+            })
+    }
+
+    async getImmunizations(patient_id: string): Promise<Array<any>> {
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Basic ${O3_BASE64}`);
+
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+
+        //console.log(O3_BASE_URL);
+        return await fetch(`${O3_BASEF_URL}/Immunization?patient=${patient_id}&_summary=data`, requestOptions)
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+                throw new BadResponse()
+            }).then((data) => {
+                return data.entry
+            })
+    }
+
+    async getAttachments(patient_id: string): Promise<Array<any>> {
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Basic ${O3_BASE64}`);
+
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+
+        //console.log(O3_BASE_URL);
+        return await fetch(`${O3_BASE_URL}/attachment?patient=${patient_id}&includeEncounterless=true`, requestOptions)
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+                throw new BadResponse()
+            }).then((data) => {
+                return data.results
+            })
+    }
+
+    async getPrograms(patient_id: string): Promise<Array<any>> {
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Basic ${O3_BASE64}`);
+
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+
+        return await fetch(`${O3_BASE_URL}/programenrollment?patient=${patient_id}&v=custom:(uuid,display,program,dateEnrolled,dateCompleted,location:(uuid,display))`, requestOptions)
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+                throw new BadResponse()
+            }).then((data) => {
+                return data.results
+            })
     }
 
 }
