@@ -30,4 +30,4 @@ export const ODOO_USER = process.env.ODOO_USER;
 export const ODOO_HOST = process.env.ODOO_HOST;
 export const ODOO_PORT = process.env.ODOO_PORT;
 export const ODOO_DB = process.env.ODOO_DB;
-export const CODE_SERVICE = process.env.ODOO_CODE_SERVICE ? process.env.ODOO_BARCODE_SERVICE : "OPENCARES";
+export const CODE_SERVICE = process.env.ODOO_CODE_SERVICE ? process.env.ODOO_CODE_SERVICE : "OPENCARES";

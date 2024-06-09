@@ -13,19 +13,23 @@ class ProdFacturationRepository extends FacturationRepository {
         const res: any = await odoo.execute_kw(
             'product.template',
             'search_read', [
-            [[['barcode', '=', service_id]]],
+            [[['barcode', '=', `${CODE_SERVICE}#${service_id}`]]],
             { "fields": ["list_price", "default_code", "name", "barcode"] }
         ])
         if (!res) {
             throw new BadResponse("service don't exist")
         }
-        const el = res[0]
-        const service: Service = {
-            uuid: el.barcode,
-            name: el.name,
-            price: el.list_price
+        try {
+            const el = res[0]
+            const service: Service = {
+                uuid: service_id,
+                name: el.name,
+                price: el.list_price
+            }
+            return service
+        } catch (error) {
+            throw new BadResponse("service don't exist")
         }
-        return service
     }
 
     async setPriceService(service_id: string, price: number): Promise<void> {
@@ -34,7 +38,7 @@ class ProdFacturationRepository extends FacturationRepository {
             'product.template',
             'write',
             [
-                [[['barcode', "=", service_id]]]
+                [[['barcode', '=', `${CODE_SERVICE}#${service_id}`]]]
             ])
         if (!res) {
             throw new BadResponse("service don't exist")
@@ -48,15 +52,17 @@ class ProdFacturationRepository extends FacturationRepository {
             'product.template',
             'search_read',
             [
-                [[['default_code', 'ilike', `${CODE_SERVICE}%`]]],
+                [[['barcode', 'ilike', `${CODE_SERVICE}#%`]]],
                 { "fields": ["list_price", "default_code", "name", "barcode"] }
             ])
+
         if (!res) {
             return []
         }
         return (res as Array<any>).map((el) => {
+
             const service: Service = {
-                uuid: el.barcode,
+                uuid: `${el.barcode}`.split("#")[1],
                 name: el.name,
                 price: el.list_price
             }
