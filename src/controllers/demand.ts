@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { DemandInput, DemandModel } from "../models/Demand";
 import User from "../models/User";
 import { RoomServiceModel } from "../models/Room";
-import { hospital_rep } from "../repositories";
+import { facturation_rep, hospital_rep } from "../repositories";
 
 class DemandController {
 
@@ -26,7 +26,7 @@ class DemandController {
 
                 const demand = {
                     patient: (await hospital_rep.getPatientDetail(element.uuidPatient)) as User,
-                    service: (await hospital_rep.getService(element.uuidService)).name,
+                    service: (await facturation_rep.getService(element.uuidService)).name,
                     status: element.status
                 }
                 output.push(demand)

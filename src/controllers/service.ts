@@ -1,9 +1,42 @@
 import { Request, Response } from "express";
 import { RoomServiceModel } from "../models/Room";
 import { PatientModel } from "../models/Patient";
-import { hospital_rep, room_rep } from "../repositories";
+import { facturation_rep, hospital_rep, room_rep } from "../repositories";
 
 class ServiceController {
+
+    async getService(req: Request, res: Response) {
+        try {
+            const service_id = req.params.id
+            const service = await facturation_rep.getService(service_id);
+            res.status(200).json(service);
+        } catch (error) {
+            res.status(405).json({ message: error });
+        }
+    }
+
+    async setService(req: Request, res: Response) {
+        try {
+            const service_id = req.params.id
+            const price = req.body.price
+            if (!price) {
+                throw new Error("get price");
+            }
+            const service = await facturation_rep.setPriceService(service_id, parseInt(price));
+            res.status(200).json(service);
+        } catch (error) {
+            res.status(405).json({ message: error });
+        }
+    }
+
+    async getServices(req: Request, res: Response) {
+        try {
+            const services = await facturation_rep.getServices();
+            res.status(200).json({ results: services });
+        } catch (error) {
+            res.status(405).json({ message: error });
+        }
+    }
 
     async getRoomServices(req: Request, res: Response) {
         try {
@@ -29,7 +62,7 @@ class ServiceController {
                 const room = {
                     service: {
                         id: element.uuidService,
-                        name: (await hospital_rep.getService(element.uuidService)).name,
+                        name: (await facturation_rep.getService(element.uuidService)).name,
                     },
                     dateMeeting: element.dateMeeting,
                     status: element.status,
@@ -107,7 +140,7 @@ class ServiceController {
 
                     // créer la reunion si néccessaire
                     let tokenRoom = room_service.tokenRoom
-                    const service = await hospital_rep.getService(room_service.uuidService)
+                    const service = await facturation_rep.getService(room_service.uuidService)
                     const patient = await PatientModel.findOne({ uuid: patient_id })
                     if (!patient) {
                         throw new Error("patient don't exist");

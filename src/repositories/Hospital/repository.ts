@@ -1,4 +1,3 @@
-import { FullService, Service } from "../../models/Service";
 import { Patient } from "../../models/Patient";
 import User from "../../models/User";
 import Visit from "../../models/Visit";
@@ -39,14 +38,6 @@ class HospitalRepository {
     async getVisits(patient_id: string): Promise<Array<Visit>> {
         return [];
     }
-
-    async getService(uuid: string): Promise<Service> {
-        return {
-            name: "Pédiatrie",
-            uuid
-        };
-    }
-
 
     async getConcept(code: string): Promise<any> {
         return;

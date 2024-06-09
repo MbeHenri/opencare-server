@@ -23,3 +23,11 @@ export const NC_BASE_URL = `http://${TALK_HOST}${TALK_PORT ? `:${TALK_PORT}` : "
 export const TALK_BASE_URL = `${NC_BASE_URL}/apps/spreed/api/v4`;
 
 export const TALK_BASE_PASSWORD = process.env.TALK_INIT_PASSWORD;
+
+//Odoo env variables
+export const ODOO_PASSWORD = process.env.ODOO_API_KEY;
+export const ODOO_USER = process.env.ODOO_USER;
+export const ODOO_HOST = process.env.ODOO_HOST;
+export const ODOO_PORT = process.env.ODOO_PORT;
+export const ODOO_DB = process.env.ODOO_DB;
+export const CODE_SERVICE = process.env.ODOO_CODE_SERVICE ? process.env.ODOO_BARCODE_SERVICE : "OPENCARES";
