@@ -125,11 +125,11 @@ class ServiceRouter extends BaseRouter {
          *       405:
          *         description: Error
          */
-        this.router.get('/:id', this.controller.getService);
+        this.router.post('/:id', this.controller.getService);
 
         /**
          * @swagger
-         * /service/room:
+         * /service/room/list:
          *   get:
          *     summary: Get list of the room service relaled of a patient
          *     tags: [Service]
@@ -155,7 +155,77 @@ class ServiceRouter extends BaseRouter {
          *       405:
          *         description: Error
          */
-        this.router.get('/room', this.controller.getRoomServices);
+        this.router.get('/room/list', this.controller.getRoomServices);
+
+        /**
+         * @swagger
+         * /service/room/invoice/patient:
+         *   get:
+         *     summary: get invoices of a patient
+         *     tags: [Service]
+         *     responses:
+         *       200:
+         *         description: The invoices
+         *       405:
+         *         description: Error
+         */
+        this.router.get('/room/invoice/patient/:id', this.controller.getInvoices);
+
+        /**
+         * @swagger
+         * /service/room/invoice:
+         *   post:
+         *     summary: Create invoice of services
+         *     tags: [Service]
+         *     responses:
+         *       200:
+         *         description: The invoice detail
+         *       405:
+         *         description: Error
+         */
+        this.router.post('/room/invoice', this.controller.createInvoice);
+
+        /**
+         * @swagger
+         * /service/room/invoice/{id}:
+         *   get:
+         *     summary: Create invoice of services
+         *     tags: [Service]
+         *     responses:
+         *       200:
+         *         description: The invoice detail
+         *       405:
+         *         description: Error
+         */
+        this.router.get('/room/invoice/:id', this.controller.getInvoice);
+
+        /**
+         * @swagger
+         * /service/room/invoice/{id}/pdf:
+         *   get:
+         *     summary: get pdf of invoice
+         *     tags: [Service]
+         *     responses:
+         *       200:
+         *         description: The pdf file of invoice
+         *       405:
+         *         description: Error
+         */
+        this.router.get('/room/invoice/:id/pdf', this.controller.getInvoicePdf);
+        
+        /**
+         * @swagger
+         * /service/room/invoice/{id}/pay:
+         *   post:
+         *     summary: set invoice to pay
+         *     tags: [Service]
+         *     responses:
+         *       200:
+         *         description: The invoice detail
+         *       405:
+         *         description: Error
+         */
+        this.router.get('/room/invoice/:id/pay', this.controller.setInvoiceToPay);
 
         /**
          * @swagger

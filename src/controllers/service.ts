@@ -38,6 +38,82 @@ class ServiceController {
         }
     }
 
+    async createInvoice(req: Request, res: Response) {
+        try {
+            const { patient_id, services } = req.body
+
+            const patient = await PatientModel.findOne({ uuid: patient_id })
+            if (!patient) {
+                throw new Error("patient don't exist");
+            }
+
+            const invoice_id = await facturation_rep.createInvoice(patient.username, services as Array<string>)
+            const invoice = await facturation_rep.getInvoice(invoice_id)
+
+            res.status(200).json({ date: invoice.date, state: invoice.payment_state, currency: invoice.currency_id[1], amount_total: invoice.amount_total, amount_residual: invoice.amount_residual });
+        } catch (error) {
+            res.status(405).json({ message: error });
+        }
+    }
+
+
+    async getInvoices(req: Request, res: Response) {
+        try {
+            const patient_id = req.params.id
+            //const patient_id = '20a679b0-50d0-4de7-a38f-24e5cc7cc900'
+
+            const patient = await PatientModel.findOne({ uuid: patient_id })
+            if (!patient) {
+                throw new Error("patient don't exist");
+            }
+
+            const invoices = await facturation_rep.getInvoices(patient.username)
+
+            res.status(200).json({ results: invoices });
+        } catch (error) {
+            res.status(405).json({ message: error });
+        }
+    }
+
+    async getInvoice(req: Request, res: Response) {
+        try {
+            const invoice_id = req.params.id
+            //const patient_id = '20a679b0-50d0-4de7-a38f-24e5cc7cc900'
+
+            const invoice = await facturation_rep.getInvoice(invoice_id)
+            res.status(200).json({ date: invoice.date, state: invoice.payment_state, currency: invoice.currency_id[1], amount_total: invoice.amount_total, amount_residual: invoice.amount_residual });
+        } catch (error) {
+            res.status(405).json({ message: error });
+        }
+    }
+
+    async getInvoicePdf(req: Request, res: Response) {
+        try {
+            const invoice_id = req.params.id
+            //const patient_id = '20a679b0-50d0-4de7-a38f-24e5cc7cc900'
+
+            const invoicefile = await facturation_rep.getInvoiceFile(invoice_id)
+            res.status(200).send(invoicefile);
+        } catch (error) {
+            res.status(405).json({ message: error });
+        }
+    }
+
+    async setInvoiceToPay(req: Request, res: Response) {
+        try {
+            const invoice_id = req.params.id
+            //const patient_id = '20a679b0-50d0-4de7-a38f-24e5cc7cc900'
+
+            await facturation_rep.payInvoice(invoice_id)
+            const invoice = await facturation_rep.getInvoice(invoice_id)
+
+            res.status(200).send({ date: invoice.date, state: invoice.payment_state, currency: invoice.currency_id[1], amount_total: invoice.amount_total });
+        } catch (error) {
+            res.status(405).json({ message: error });
+        }
+    }
+
+
     async getRoomServices(req: Request, res: Response) {
         try {
             const uuidService = req.query.service_id

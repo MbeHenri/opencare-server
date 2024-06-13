@@ -7,12 +7,14 @@ export default class Odoo {
     secure: boolean;
     models: Client;
     common: Client;
+    report: Client;
     uid: any | null = null;
 
     constructor(secure = false) {
         this.secure = secure
         this.models = this._getClient("/xmlrpc/2/object")
         this.common = this._getClient("/xmlrpc/2/common")
+        this.report = this._getClient("/xmlrpc/2/report")
     }
 
     _getClient(path: string) {
@@ -31,6 +33,18 @@ export default class Odoo {
     _methodCall(method: string, params: Array<any> = []) {
         return new Promise((resolve, reject) => {
             this.models.methodCall(method, params, (err, value) => {
+                if (err) {
+                    return reject(err);
+                } else {
+                    return resolve(value);
+                }
+            });
+        });
+    }
+
+    _reportCall(method: string, params: Array<any> = []) {
+        return new Promise((resolve, reject) => {
+            this.report.methodCall(method, params, (err, value) => {
                 if (err) {
                     return reject(err);
                 } else {
@@ -82,9 +96,30 @@ export default class Odoo {
             const value = await this._methodCall("execute_kw", finalParams);
             return value;
         } catch (error) {
-            throw new BadResponse(error as string);
+            throw error;
         }
     }
+
+    async render_report(params: Array<any> = []) {
+        try {
+
+            if (!this.uid) {
+                await this.connect()
+            }
+
+            const finalParams = [
+                ODOO_DB,
+                this.uid,
+                ODOO_PASSWORD,
+                ...params,
+            ];
+            const value = await this._reportCall("render_report", finalParams);
+            return value;
+        } catch (error) {
+            throw error;
+        }
+    }
+
 }
 
 export const odoo = new Odoo();

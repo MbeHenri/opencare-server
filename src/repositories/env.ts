@@ -29,5 +29,10 @@ export const ODOO_PASSWORD = process.env.ODOO_API_KEY;
 export const ODOO_USER = process.env.ODOO_USER;
 export const ODOO_HOST = process.env.ODOO_HOST;
 export const ODOO_PORT = process.env.ODOO_PORT;
+export const ODOO_CASH_ID = process.env.ODOO_CASH_ID ? parseInt(process.env.ODOO_CASH_ID) : 7;
 export const ODOO_DB = process.env.ODOO_DB;
 export const CODE_SERVICE = process.env.ODOO_CODE_SERVICE ? process.env.ODOO_CODE_SERVICE : "OPENCARES";
+export const ODOO_BANK_ID = process.env.ODOO_BANK_ID ? parseInt(process.env.ODOO_BANK_ID) : 6;
+
+
+export const ODOO_BASE_URL = `http://${ODOO_HOST}${ODOO_PORT ? `:${ODOO_PORT}` : ""}`;
