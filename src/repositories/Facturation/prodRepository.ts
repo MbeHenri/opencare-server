@@ -257,7 +257,7 @@ class ProdFacturationRepository extends FacturationRepository {
                     '=',
                     patient['id']
                 ]]],
-                { 'fields': ['id', 'amount_total', 'payment_state', 'date', 'amount_residual'] }
+                { 'fields': ['id', 'amount_total', 'payment_state', 'date', 'amount_residual', 'name'] }
             ]);
 
         if (!invoices) {
