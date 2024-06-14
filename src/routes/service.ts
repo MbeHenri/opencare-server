@@ -212,7 +212,7 @@ class ServiceRouter extends BaseRouter {
          *         description: Error
          */
         this.router.get('/room/invoice/:id/pdf', this.controller.getInvoicePdf);
-        
+
         /**
          * @swagger
          * /service/room/invoice/{id}/pay:

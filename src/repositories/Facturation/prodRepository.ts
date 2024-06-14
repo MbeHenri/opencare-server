@@ -170,7 +170,7 @@ class ProdFacturationRepository extends FacturationRepository {
         return res
     }
 
-    async payInvoice(invoice_id: string, type_payement: Type_payement = "Cash"): Promise<void> {
+    async payInvoice(invoice_id: string): Promise<void> {
 
         let invoice: any = await this.getInvoice(invoice_id);
 
@@ -178,9 +178,8 @@ class ProdFacturationRepository extends FacturationRepository {
 
             // ajout d'un paiement 
             const amount: number = invoice['amount_residual']
-            const id_type_payement = type_payement == "Bank" ? ODOO_BANK_ID : ODOO_CASH_ID
             const customer_id = invoice['partner_id'][0];
-            await this.addPayment(customer_id, amount, id_type_payement);
+            await this.addPayment(customer_id, amount);
 
             // jointure du premier paiement non utilisé du client à la facture du client 
             invoice = await odoo.execute_kw(
@@ -205,13 +204,13 @@ class ProdFacturationRepository extends FacturationRepository {
         }
     }
 
-    private async addPayment(customer_id: any, amount: number, id_type_payement: number) {
+    private async addPayment(customer_id: any, amount: number) {
         const payment_data = {
             'payment_type': 'inbound',
             'partner_type': 'customer',
             'partner_id': customer_id,
             'amount': amount,
-            'journal_id': id_type_payement,
+            //'journal_id': id_type_payement,
         };
 
         // Valider le paiement de la facture

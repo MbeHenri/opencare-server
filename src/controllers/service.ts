@@ -40,7 +40,9 @@ class ServiceController {
 
     async createInvoice(req: Request, res: Response) {
         try {
-            const { patient_id, services } = req.body
+            //const { patient_id, services } = req.body
+            const patient_id = '20a679b0-50d0-4de7-a38f-24e5cc7cc900'
+            const services = ["136b3011-ccf2-416f-8c3d-5b878e2624bb"]
 
             const patient = await PatientModel.findOne({ uuid: patient_id })
             if (!patient) {
