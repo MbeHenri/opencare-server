@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { DemandInput, DemandModel } from "../models/Demand";
-import User from "../models/User";
-import { RoomServiceModel } from "../models/Room";
+import { DemandInput, DemandModel, StatusDemandDict } from "../models/Demand";
 import { facturation_rep, hospital_rep } from "../repositories";
+import { AppointmentModel } from "../models/Appointment";
+import { PatientModel } from "../models/Patient";
 
 class DemandController {
 
@@ -25,7 +25,10 @@ class DemandController {
                 const element = demands[i];
 
                 const demand = {
-                    patient: (await hospital_rep.getPatientDetail(element.uuidPatient)) as User,
+                    patient: {
+                        uuid: element.uuidPatient,
+                        names: (await hospital_rep.getPatientDetail(element.uuidPatient)).names
+                    },
                     service: (await facturation_rep.getService(element.uuidService)).name,
                     status: element.status
                 }
@@ -54,11 +57,11 @@ class DemandController {
             let demand = await DemandModel.findOne({
                 uuidPatient: patient_id,
                 uuidService: service_id,
-                status: { $in: ["validated", "processing"] }
+                status: StatusDemandDict["processing"]
             })
 
             if (demand) {
-                // une demande a déjà été validé ou est en attente
+                // une demande a déjà est en attente
                 res.status(202).json({ demandDate: demand.demandDate });
             } else {
                 // on crée une nouvelle demande
@@ -67,7 +70,8 @@ class DemandController {
                     uuidService: service_id
                 }
                 demand = await DemandModel.create(input)
-                res.status(201).json({ demandDate: demand.demandDate });
+
+                res.status(201).json({ id: demand.id, demandDate: demand.demandDate });
             }
 
         } catch (error) {
@@ -77,39 +81,50 @@ class DemandController {
 
     async validDemand(req: Request, res: Response) {
         try {
-            const { service_id, patient_id, doctor_id, date_meeting } = req.body
+            const demand_id = req.params.id;
+            const { doctor_id, date_meeting } = req.body
 
-            if (!service_id) {
-                throw new Error("give service id");
-            }
-            if (!patient_id) {
-                throw new Error("give patient id");
-            }
             if (!doctor_id) {
                 throw new Error("give doctor id");
             }
 
-            let room_service = await RoomServiceModel.findOne({
-                uuidPatient: patient_id,
-                uuidService: service_id
+            // controles sur la demande
+            const demand = await DemandModel.findById(demand_id)
+            if (!demand) {
+                throw new Error("la demande n'existe pas")
+            }
+
+            if (demand.status != StatusDemandDict['processing']) {
+                throw new Error("la demande n'est pas en attente")
+            }
+
+            // controles sur le patient
+            const patient = await PatientModel.findOne({ uuid: demand.uuidPatient })
+            if (!patient) {
+                throw new Error("patient don't exist");
+            }
+
+            // creation d'une rencontre dans l'hopital
+            const uuidAppointment = "";
+
+            // creéation de la facture
+            const invoice_id = await facturation_rep.createInvoice(patient.username, [demand.uuidService])
+
+            // enregistrement de la rencontre
+            AppointmentModel.create({
+                uuidAppointment: uuidAppointment,
+                uuidPatient: demand.uuidPatient,
+                idInvoice: invoice_id,
             })
 
-            if (!room_service) {
-                const input = {
-                    uuidPatient: patient_id,
-                    uuidService: service_id,
-                    uuidDoctor: doctor_id
-                }
-                if (date_meeting) {
-                    input["date_meeting"] = date_meeting
-                }
 
-                room_service = await RoomServiceModel.create(input);
-            }
-            await DemandModel.updateOne({ uuidService: service_id, uuidPatient: patient_id }, { $set: { status: "validated" } });
-            //demand = await DemandModel.findOne({ uuidService: service_id, uuidPatient: patient_id });
+            // mis à jour de la demande
+            demand.updateOne({ $set: { status: StatusDemandDict["validated"] } })
+            //const demand = await DemandModel.findById(demand_id)
+
             res.status(201).json({
-                status: "validated"
+                id: demand.id,
+                status: StatusDemandDict["validated"]
             });
 
         } catch (error) {
@@ -119,27 +134,22 @@ class DemandController {
 
     async rejectDemand(req: Request, res: Response) {
         try {
-            const { service_id, patient_id } = req.body
+            const demand_id = req.params.id;
 
-            if (!service_id) {
-                throw new Error("give service id");
-            }
-            if (!patient_id) {
-                throw new Error("give patient id");
+            // controles sur la demande
+            const demand = await DemandModel.findById(demand_id)
+            if (!demand) {
+                throw new Error("la demande n'existe pas")
             }
 
-            let room_service = await RoomServiceModel.findOne({
-                uuidPatient: patient_id,
-                uuidService: service_id
-            })
-
-            if (room_service) {
-                res.status(408).json({ message: "demand don't reject because this patient have already validated for this service" });
-            } else {
-                await DemandModel.updateOne({ uuidService: service_id, uuidPatient: patient_id }, { $set: { status: "rejected" } });
-                //const updateDemand = await DemandModel.findOne({ uuidService: service_id, uuidPatient: patient_id });
-                res.status(201).json({ status: "rejected" });
+            if (demand.status != StatusDemandDict['processing']) {
+                throw new Error("la demande n'est pas en attente")
             }
+
+            demand.updateOne({ $set: { status: StatusDemandDict['rejected'] } });
+            //const updateDemand = await DemandModel.findOne({ uuidService: service_id, uuidPatient: patient_id });
+            res.status(201).json({ status: "rejected" });
+
         } catch (error) {
             res.status(405).json({ message: error });
         }

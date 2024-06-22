@@ -1,12 +1,12 @@
 import { Document, Schema, model } from "mongoose";
 
-export type StatusDemand = "validated" | "rejected" | "processing";
+export const StatusDemandDict = { 'validated': "0", 'rejected': "1", 'processing': "2" }
 
 export type DemandDocument = Document & {
     uuidPatient: string,
     uuidService: string,
     demandDate: Date,
-    status: StatusDemand
+    status: string,
 }
 
 export type DemandInput = {
@@ -29,7 +29,7 @@ const DemandSchema = new Schema({
     },
     status: {
         type: String,
-        default: "processing"
+        default: StatusDemandDict["processing"]
     },
 }, {
     collection: 'demands'

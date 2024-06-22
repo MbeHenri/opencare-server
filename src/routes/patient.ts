@@ -203,6 +203,70 @@ class PatientRouter extends BaseRouter {
          */
         this.router.get('/:id/program', this.controller.getPrograms);
 
+        /**
+         * @swagger
+         * /patient/{id}/invoice:
+         *   get:
+         *     summary: Get related the invoices of a patient
+         *     tags: [Patient]
+         *     parameters:
+         *       - in: path
+         *         name: id
+         *         schema:
+         *           type: string
+         *         required: true
+         *         description: The patient id
+         *     responses:
+         *       200:
+         *         description: The list of invoices contains invoices of the patient
+         *       405:
+         *         description: Error
+         */
+        this.router.get('/:id/invoice', this.controller.getInvoices);
+
+        /* A GERER */
+        /**
+         * @swagger
+         * /patient/{id}/appointment:
+         *   get:
+         *     summary: Get related the appointments of a patient
+         *     tags: [Patient]
+         *     parameters:
+         *       - in: path
+         *         name: id
+         *         schema:
+         *           type: string
+         *         required: true
+         *         description: The patient id
+         *     responses:
+         *       200:
+         *         description: The list of appointments contains appointments of the patient
+         *       405:
+         *         description: Error
+         */
+        this.router.get('/:id/appointment', this.controller.getAppointments);
+
+        /**
+         * @swagger
+         * /patient/{id}/demand:
+         *   get:
+         *     summary: Get related the demands of a patient
+         *     tags: [Patient]
+         *     parameters:
+         *       - in: path
+         *         name: id
+         *         schema:
+         *           type: string
+         *         required: true
+         *         description: The patient id
+         *     responses:
+         *       200:
+         *         description: The list of demands contains demands of the patient
+         *       405:
+         *         description: Error
+         */
+        this.router.get('/:id/demand', this.controller.getDemands);
+
     }
 }
 const patientRoutes = new PatientRouter().router;

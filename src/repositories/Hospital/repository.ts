@@ -1,3 +1,4 @@
+import { Doctor } from "../../models/Doctor";
 import { Patient } from "../../models/Patient";
 import User from "../../models/User";
 import Visit from "../../models/Visit";
@@ -23,15 +24,19 @@ class HospitalRepository {
         };
     }
 
-    async getDoctors(): Promise<Array<User>> {
+    async getDoctors(): Promise<Array<Doctor>> {
         return [];
     }
 
-    async getDoctor(person_id: string): Promise<User> {
+    async getDoctor(uuid: string): Promise<Doctor> {
 
         return {
-            id: "454588",
-            names: "Jake Doctor",
+            uuid: "454588",
+            username: "dof",
+            person:{
+                uuid : "sdsd",
+                display : 'ssdsd'
+            }
         };
     }
 

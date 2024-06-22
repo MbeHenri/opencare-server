@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import BaseController from "./base";
-import { hospital_rep } from "../repositories";
+import { facturation_rep, hospital_rep } from "../repositories";
+import { DemandModel } from "../models/Demand";
+import User from "../models/User";
+import { PatientModel } from "../models/Patient";
+import { AppointmentModel, StatusAppointmentDict } from "../models/Appointment";
 
 class PatientController extends BaseController {
 
@@ -91,6 +95,83 @@ class PatientController extends BaseController {
             res.status(200).json({ results });
         } catch (error) {
             res.status(405).json({ message: error });
+        }
+    }
+
+    async getDemands(req: Request, res: Response) {
+        try {
+            const uuidPatient = req.params.id
+
+            const demands = await DemandModel.find({ uuidPatient }).sort('-demandDate').exec();
+            const output: Array<any> = []
+
+            for (let i = 0; i < demands.length; i++) {
+                const element = demands[i];
+
+                const demand = {
+                    service: (await facturation_rep.getService(element.uuidService)).name,
+                    status: element.status,
+                    id: element.id,
+                }
+                output.push(demand)
+            }
+            res.status(200).json({ results: output });
+
+        } catch (error) {
+            res.status(405).json({ message: error });
+        }
+    }
+
+    async getInvoices(req: Request, res: Response) {
+        try {
+            const patient_id = req.params.id
+
+            const patient = await PatientModel.findOne({ uuid: patient_id })
+            if (!patient) {
+                throw new Error("patient don't exist");
+            }
+
+            const invoices = await facturation_rep.getInvoices(patient.username)
+
+            res.status(200).json({ results: invoices });
+        } catch (error) {
+            res.status(405).json({ message: error });
+        }
+    }
+
+    async getAppointments(req: Request, res: Response) {
+        try {
+            const patient_id = req.params.id
+            const status = req.query.status
+            const filter = { uuidPatient: patient_id };
+
+            if (status && ([StatusAppointmentDict["pay"], StatusAppointmentDict["unpay"]].includes(status as string))) {
+                filter["status"] = status as string
+            }
+
+            const appointments = await AppointmentModel.find(filter);
+            const output: Array<any> = [];
+            for (let index = 0; index < appointments.length; index++) {
+                const element = appointments[index];
+
+                // recupération de l'appointment depuis l'hospital_rep (uuid et details du service doivent etre obtenu)
+                const room = {
+                    /* 
+                    service: {
+                        id: element.uuidService,
+                        name: (await facturation_rep.getService(element.uuidService)).name,
+                    }, 
+                    dateMeeting: element.dateMeeting,
+                    */
+                    status: element.status,
+                    tokenRoom: element.tokenRoom == "" || element.status == StatusAppointmentDict["unpay"] ? null : element.tokenRoom,
+                    //patient: (await hospital_rep.getPatientDetail(element.uuidPatient))
+                };
+                output.push(room)
+            }
+            res.status(200).json(output);
+        } catch (error) {
+            res.status(405).json({ message: error as string });
         }
     }
 

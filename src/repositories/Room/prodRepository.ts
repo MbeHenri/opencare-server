@@ -217,11 +217,11 @@ class ProdRoomRepository extends RoomRepository {
         return `${TALK_BASE_PASSWORD}`;
     }
 
-    async addParticipant(id: string, name: string, token: string): Promise<void> {
+    async addParticipant(username: string, displayName: string, token: string): Promise<void> {
         try {
-            const password = await this.getPasswordUser(id);
-            await this.createUser(id, name, password);
-            await this.addUserInRoom(token, id);
+            const password = await this.getPasswordUser(username);
+            await this.createUser(username, displayName, password);
+            await this.addUserInRoom(token, username);
 
         } catch (error) { }
     }
