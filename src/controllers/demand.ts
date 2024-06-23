@@ -84,7 +84,7 @@ class DemandController {
     async validDemand(req: Request, res: Response) {
         try {
             const demand_id = req.params.id;
-            const { doctor_id, date_meeting } = req.body
+            const { doctor_id, date_meeting, duration } = req.body
 
             if (!doctor_id) {
                 throw new Error("give doctor id");
@@ -107,9 +107,29 @@ class DemandController {
             }
 
             // creation d'une rencontre dans l'hopital
-            const uuidAppointment = "";
 
-            // creéation de la facture
+            let duration_minutes = 30;
+            if (duration) {
+                try {
+                    duration_minutes = parseInt(`${duration}`)
+                } catch (error) { }
+            }
+
+            let start_date: Date;
+            if (date_meeting) {
+                start_date = new Date(`${date_meeting}`)
+            } else {
+                start_date = new Date()
+                start_date.setMinutes(start_date.getMinutes() + duration_minutes)
+            }
+
+            const end_date = new Date(start_date)
+            end_date.setMinutes(end_date.getMinutes() + duration_minutes)
+
+            const appointment = await hospital_rep.createAppointement(demand.uuidPatient, demand.uuidService, doctor_id, start_date, end_date)
+            const uuidAppointment = appointment.uuid;
+
+            // création de la facture
             const invoice_id = await facturation_rep.createInvoice(patient.username, [demand.uuidService])
 
             // enregistrement de la rencontre
@@ -118,7 +138,6 @@ class DemandController {
                 uuidPatient: demand.uuidPatient,
                 idInvoice: invoice_id,
             })
-
 
             // mis à jour de la demande
             demand.updateOne({ $set: { status: StatusDemandDict["validated"] } })

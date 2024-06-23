@@ -416,6 +416,7 @@ class ProdHospitalRepository extends HospitalRepository {
 
         const raw = JSON.stringify({
             appointmentKind: "Scheduled",
+            status: 'Cancelled',
             serviceUuid: service_id,
             startDateTime: `${start_date}`,
             endDateTime: `${end_date}`,
@@ -442,6 +443,44 @@ class ProdHospitalRepository extends HospitalRepository {
             })
     }
 
+    async setAppointement(appointment_id: string, patient_id: string, service_id: string, doctor_id: string, start_date: Date, end_date: Date, status: string = 'Scheduled'): Promise<any> {
+
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Basic ${O3_BASE64}`);
+
+        const base_raw = {
+            appointmentKind: "Scheduled",
+            status: status,
+            serviceUuid: service_id,
+            startDateTime: `${start_date}`,
+            endDateTime: `${end_date}`,
+            patientUuid: patient_id,
+            uuid: appointment_id,
+        };
+
+        const raw = JSON.stringify(doctor_id == "" ? base_raw : {
+            ...base_raw,
+            providers: [
+                {
+                    uuid: doctor_id
+                }
+            ],
+        });
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw
+        };
+
+        return await fetch(`${O3_BASE_URL}/appointment`, requestOptions)
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+                throw new BadResponse(`Impossible de mettre à jour la rencontre depuis l'hopital (${response.status})`, "O3")
+            })
+    }
 }
 
 export default ProdHospitalRepository

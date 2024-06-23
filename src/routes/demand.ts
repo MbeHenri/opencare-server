@@ -32,9 +32,13 @@ import { BaseRouter } from './base';
 *         date_meeting:
 *           type: string
 *           description: date of meeting 
+*         duration:
+*           type: natural number
+*           description: duration of the meeting in minutes
 *       example:
 *         doctor_id: fg4sdfgdfg5sdfgdfg
 *         date_meeting: 2024-06-04T08:07:51
+*         duration: 30
 *
 */
 
@@ -94,7 +98,6 @@ class DemandRouter extends BaseRouter {
         this.router.post('', this.controller.doDemand);
 
 
-        /* A GERER */
         /**
          * @swagger
          * /demand/{id}/validate:

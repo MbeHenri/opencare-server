@@ -224,7 +224,6 @@ class PatientRouter extends BaseRouter {
          */
         this.router.get('/:id/invoice', this.controller.getInvoices);
 
-        /* A GERER */
         /**
          * @swagger
          * /patient/{id}/appointment:

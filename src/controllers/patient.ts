@@ -166,19 +166,28 @@ class PatientController extends BaseController {
                 const element = appointments[index];
 
                 // recupération de l'appointment depuis l'hospital_rep (uuid et details du service doivent etre obtenu)
-                const room = {
-                    /* 
+                const appointment = await hospital_rep.getAppointement(element.uuidAppointment);
+                //const doctor_uuid = appointment.providers[0].uuid
+
+                const el = {
+                    // éléments de l'hopital
                     service: {
-                        id: element.uuidService,
-                        name: (await facturation_rep.getService(element.uuidService)).name,
-                    }, 
-                    dateMeeting: element.dateMeeting,
-                    */
-                    status: element.status,
+                        uuid: appointment.service.uuid,
+                        name: appointment.service.name,
+                    },
+                    startDateTime: new Date(appointment.startDateTime),
+                    endDateTime: new Date(appointment.endDateTime),
+                    patient: {
+                        uuid: appointment.patient.uuid,
+                        name: appointment.patient.name,
+                    },
+                    statusProgress: appointment.status,
+
+                    // élements du système
+                    statusPayment: element.status,
                     tokenRoom: element.tokenRoom == "" || element.status == StatusAppointmentDict["unpay"] ? null : element.tokenRoom,
-                    //patient: (await hospital_rep.getPatientDetail(element.uuidPatient))
                 };
-                output.push(room)
+                output.push(el)
             }
             res.status(200).json(output);
         } catch (error) {

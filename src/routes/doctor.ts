@@ -49,7 +49,6 @@ class DoctorRouter extends BaseRouter {
          */
         this.router.get('/:id', this.controller.getDoctor);
         
-        /* A GERER */
         /**
          * @swagger
          * /doctor/{id}/appointment:

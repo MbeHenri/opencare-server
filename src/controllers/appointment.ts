@@ -102,11 +102,25 @@ class AppointmentController {
 
                     let tokenRoom = appointment.tokenRoom
 
+                    // recupération de l'appointment depuis l'hospital (uuid et details du service doivent etre obtenu)
+                    const appointment_h = await hospital_rep.getAppointement(appointment.uuidAppointment);
+                    const doctor_uuid = appointment_h.providers[0].uuid
+
+
+                    // éléments de l'hopital
+                    const service = {
+                        uuid: appointment_h.service.uuid,
+                        name: appointment_h.service.name,
+                    }
+                    const startDateTime = new Date(appointment_h.startDateTime)
+                    const endDateTime = new Date(appointment_h.endDateTime)
+
+
                     if (tokenRoom == "") {
 
                         // recuperation de la rencontre depuis l'hopital
                         const uuidPatient = appointment.uuidPatient
-                        const uuidDoctor = ""
+                        const uuidDoctor = doctor_uuid
 
                         const room = RoomModel.findOne({
                             uuidDoctor,
@@ -143,6 +157,10 @@ class AppointmentController {
 
                     // signaler que le service a été payé et qu'un espace de consultation a été crée
                     await appointment.updateOne({ $set: { status: "pay", tokenRoom } })
+
+                    // on signale à l'hopital que la rencontre peut s'afficher
+                    await hospital_rep.setAppointement(appointment.uuidAppointment, appointment.uuidPatient, service.uuid, "", startDateTime, endDateTime, 'Scheduled')
+
                     res.status(201).json({ status: "pay", tokenRoom });
 
                 } else {

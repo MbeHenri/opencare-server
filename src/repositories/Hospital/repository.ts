@@ -92,6 +92,10 @@ class HospitalRepository {
         return {};
     }
 
+    async setAppointement(appointment_id: string, patient_id: string, service_id: string, doctor_id: string, start_date: Date, end_date: Date, status: string = 'Scheduled'): Promise<any> {
+        return {}
+    }
+
 }
 
 export default HospitalRepository;
