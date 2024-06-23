@@ -14,7 +14,8 @@ class PatientController extends BaseController {
             const patient = await hospital_rep.getPatientDetail(patient_id);
             res.status(200).json(patient);
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 
@@ -24,7 +25,8 @@ class PatientController extends BaseController {
             const visits = await hospital_rep.getVisits(patient_id);
             res.status(200).json({ results: visits });
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 
@@ -34,7 +36,8 @@ class PatientController extends BaseController {
             const results = await hospital_rep.getObservations(patient_id);
             res.status(200).json({ results });
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 
@@ -44,7 +47,8 @@ class PatientController extends BaseController {
             const results = await hospital_rep.getMedications(patient_id);
             res.status(200).json({ results });
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 
@@ -54,7 +58,8 @@ class PatientController extends BaseController {
             const results = await hospital_rep.getAllergies(patient_id);
             res.status(200).json({ results });
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 
@@ -64,7 +69,8 @@ class PatientController extends BaseController {
             const results = await hospital_rep.getConditions(patient_id);
             res.status(200).json({ results });
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 
@@ -74,7 +80,8 @@ class PatientController extends BaseController {
             const results = await hospital_rep.getImmunizations(patient_id);
             res.status(200).json({ results });
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 
@@ -84,7 +91,8 @@ class PatientController extends BaseController {
             const results = await hospital_rep.getAttachments(patient_id);
             res.status(200).json({ results });
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 
@@ -94,7 +102,8 @@ class PatientController extends BaseController {
             const results = await hospital_rep.getPrograms(patient_id);
             res.status(200).json({ results });
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 
@@ -118,7 +127,8 @@ class PatientController extends BaseController {
             res.status(200).json({ results: output });
 
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 
@@ -135,7 +145,8 @@ class PatientController extends BaseController {
 
             res.status(200).json({ results: invoices });
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 

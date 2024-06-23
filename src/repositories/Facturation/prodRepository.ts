@@ -1,8 +1,8 @@
 import { Service } from "../../models/Service";
-import { CODE_SERVICE, ODOO_BANK_ID, ODOO_BASE_URL, ODOO_CASH_ID, ODOO_DB, ODOO_PASSWORD } from "../env";
+import { CODE_SERVICE, ODOO_BASE_URL } from "../env";
 import { BadResponse } from "../errors";
 import { odoo } from "./odoo";
-import FacturationRepository, { Type_payement } from "./repository";
+import FacturationRepository from "./repository";
 
 
 class ProdFacturationRepository extends FacturationRepository {
@@ -16,7 +16,7 @@ class ProdFacturationRepository extends FacturationRepository {
             { "fields": ["list_price", "default_code", "name", "barcode"], 'limit': 1 }
         ])
         if (!res) {
-            throw new BadResponse("service don't exist")
+            throw new BadResponse("le service n'existe pas", "ODOO")
         }
         try {
             const el = res[0]
@@ -27,7 +27,7 @@ class ProdFacturationRepository extends FacturationRepository {
             }
             return service
         } catch (error) {
-            throw new BadResponse("service don't exist")
+            throw new BadResponse("le service n'existe pas", "ODOO")
         }
     }
 
@@ -44,7 +44,7 @@ class ProdFacturationRepository extends FacturationRepository {
         try {
             return res[0]
         } catch (error) {
-            throw new BadResponse("patient don't exist")
+            throw new BadResponse("le patient n'existe pas", "ODOO")
         }
     }
 
@@ -57,7 +57,7 @@ class ProdFacturationRepository extends FacturationRepository {
                 [[['barcode', '=', `${CODE_SERVICE}#${service_id}`]]]
             ])
         if (!res) {
-            throw new BadResponse("service don't exist")
+            throw new BadResponse("le service n'existe pas", "ODOO")
         }
         await await odoo.execute_kw('product.template', 'write', [[[res], { 'list_price': price }]])
     }
@@ -164,7 +164,7 @@ class ProdFacturationRepository extends FacturationRepository {
                     return response.body
                      */
                 }
-                throw new BadResponse()
+                throw new BadResponse(`Impossible de recupérer le fichier pdf`, "ODOO")
             })
             .then(data => data.arrayBuffer()).then(data => Buffer.from(data))
         return res
@@ -240,7 +240,7 @@ class ProdFacturationRepository extends FacturationRepository {
         try {
             return invoice[0];
         } catch (error) {
-            throw new BadResponse("invoice don't exist");
+            throw new BadResponse(`Aucun invoice n'existe`, "ODOO")
         }
     }
 
@@ -260,7 +260,7 @@ class ProdFacturationRepository extends FacturationRepository {
             ]);
 
         if (!invoices) {
-            throw new BadResponse("invoices don't exist");
+            throw new BadResponse(`Aucun invoices n'existent`, "ODOO")
         }
         return invoices;
     }

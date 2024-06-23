@@ -15,7 +15,8 @@ class AppointmentController {
 
             res.status(200).send({ date: invoice.date, state: invoice.payment_state, currency: invoice.currency_id[1], amount_total: invoice.amount_total });
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 
@@ -85,7 +86,8 @@ class AppointmentController {
                 res.status(404).json({ message: "room service don't exist" });
             }
         } catch (error) {
-            res.status(405).json({ message: error as string });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 
@@ -135,7 +137,7 @@ class AppointmentController {
                             })
                         }
                     }
-                    
+
                     // on met la facture à l'état payé
                     await facturation_rep.payInvoice(appointment.idInvoice)
 
@@ -150,7 +152,8 @@ class AppointmentController {
                 res.status(404).json({ message: "appointment don't exist" });
             }
         } catch (error) {
-            res.status(405).json({ message: error as string });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 }

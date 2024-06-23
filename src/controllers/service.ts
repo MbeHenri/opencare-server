@@ -9,7 +9,8 @@ class ServiceController {
             const service = await facturation_rep.getService(service_id);
             res.status(200).json(service);
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 
@@ -23,7 +24,8 @@ class ServiceController {
             const service = await facturation_rep.setPriceService(service_id, parseInt(price));
             res.status(200).json(service);
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 
@@ -32,7 +34,8 @@ class ServiceController {
             const services = await facturation_rep.getServices();
             res.status(200).json({ results: services });
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 }

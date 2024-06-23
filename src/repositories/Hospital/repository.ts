@@ -33,9 +33,9 @@ class HospitalRepository {
         return {
             uuid: "454588",
             username: "dof",
-            person:{
-                uuid : "sdsd",
-                display : 'ssdsd'
+            person: {
+                uuid: "sdsd",
+                display: 'ssdsd'
             }
         };
     }
@@ -74,6 +74,22 @@ class HospitalRepository {
 
     async getPrograms(patient_id: string): Promise<Array<any>> {
         return [];
+    }
+
+    async getAppointements(): Promise<Array<any>> {
+        return [];
+    }
+
+    async getPatientAppointements(patient_id: string): Promise<Array<any>> {
+        return [];
+    }
+
+    async getAppointement(appointment_id: string): Promise<any> {
+        return {};
+    }
+
+    async createAppointement(patient_id: string, service_id: string, doctor_id: string, start_date: Date, end_date: Date): Promise<any> {
+        return {};
     }
 
 }

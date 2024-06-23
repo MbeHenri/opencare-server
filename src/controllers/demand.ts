@@ -37,7 +37,8 @@ class DemandController {
             res.status(200).json({ results: output });
 
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 
@@ -75,7 +76,8 @@ class DemandController {
             }
 
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 
@@ -128,7 +130,8 @@ class DemandController {
             });
 
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 
@@ -151,7 +154,8 @@ class DemandController {
             res.status(201).json({ status: "rejected" });
 
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 

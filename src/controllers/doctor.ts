@@ -12,7 +12,8 @@ class DoctorController extends BaseController {
             res.status(200).json({ results: doctors });
 
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 
@@ -28,7 +29,8 @@ class DoctorController extends BaseController {
             res.status(200).json(doctor);
 
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 

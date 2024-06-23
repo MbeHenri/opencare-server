@@ -25,7 +25,7 @@ class ProdHospitalRepository extends HospitalRepository {
                 if (response.ok) {
                     return response.json()
                 }
-                throw new BadResponse("impossible de recuperer les details du patient depuis l'hopital")
+                throw new BadResponse(`Impossible de recuperer les details du patient depuis l'hopital (${response.status})`, "O3")
             })
             .then(result => {
                 const person = result.person;
@@ -57,7 +57,7 @@ class ProdHospitalRepository extends HospitalRepository {
                 if (response.ok) {
                     return response.json()
                 }
-                throw new BadResponse("impossible de recuperer l'utilisateur depuis l'hopital")
+                throw new BadResponse(`Impossible de recuperer l'utilisateur depuis l'hopital (${response.status})`, "O3")
             })
             .then(result => {
                 const person = result.person;
@@ -84,7 +84,7 @@ class ProdHospitalRepository extends HospitalRepository {
                 if (response.ok) {
                     return response.json()
                 }
-                throw new BadResponse("impossible de recuperer les docteurs depuis l'hopital")
+                throw new BadResponse(`Impossible de recuperer les docteurs depuis l'hopital (${response.status})`, "O3")
             })
             .then(({ results }) => {
                 const data: Array<any> = results
@@ -118,7 +118,7 @@ class ProdHospitalRepository extends HospitalRepository {
                 if (response.ok) {
                     return response.json()
                 }
-                throw new BadResponse("impossible de recuperer le docteur depuis l'hopital")
+                throw new BadResponse(`Impossible de recuperer le docteur depuis l'hopital (${response.status})`, "O3")
             })
             .then((doctor) => {
                 return {
@@ -149,7 +149,7 @@ class ProdHospitalRepository extends HospitalRepository {
                 if (response.ok) {
                     return response.json()
                 }
-                throw new BadResponse("impossible de recuperer la liste des visite depuis l'hopital")
+                throw new BadResponse(`Impossible de recuperer la liste des visite depuis l'hopital (${response.status})`, "O3")
             })
             .then(({ results }) => {
                 const data: Array<any> = results;
@@ -198,7 +198,7 @@ class ProdHospitalRepository extends HospitalRepository {
                 if (response.ok) {
                     return response.json()
                 }
-                throw new BadResponse("impossible de recuperer les concepts depuis l'hopital")
+                throw new BadResponse(`Impossible de recuperer le concept depuis l'hopital (${response.status})`, "O3")
             })
     }
 
@@ -216,7 +216,7 @@ class ProdHospitalRepository extends HospitalRepository {
                 if (response.ok) {
                     return response.json()
                 }
-                throw new BadResponse("impossible de recuperer les observations depuis l'hopital")
+                throw new BadResponse(`Impossible de recuperer les observations du patient depuis l'hopital (${response.status})`, "O3")
             }).then((data) => {
                 return data.entry
             })
@@ -237,7 +237,7 @@ class ProdHospitalRepository extends HospitalRepository {
                 if (response.ok) {
                     return response.json()
                 }
-                throw new BadResponse("impossible de recuperer les médicaments depuis l'hopital")
+                throw new BadResponse(`Impossible de recuperer les médicaments du patient depuis l'hopital (${response.status})`, "O3")
             }).then((data) => {
                 return data.results
             })
@@ -258,7 +258,7 @@ class ProdHospitalRepository extends HospitalRepository {
                 if (response.ok) {
                     return response.json()
                 }
-                throw new BadResponse("impossible de recuperer les allergies depuis l'hopital")
+                throw new BadResponse(`Impossible de recuperer les allergies du patient depuis l'hopital (${response.status})`, "O3")
             }).then((data) => {
                 return data.entry
             })
@@ -279,7 +279,7 @@ class ProdHospitalRepository extends HospitalRepository {
                 if (response.ok) {
                     return response.json()
                 }
-                throw new BadResponse("impossible de recuperer les conditions depuis l'hopital")
+                throw new BadResponse(`Impossible de recuperer les conditions du patient depuis l'hopital (${response.status})`, "O3")
             }).then((data) => {
                 return data.entry
             })
@@ -300,7 +300,7 @@ class ProdHospitalRepository extends HospitalRepository {
                 if (response.ok) {
                     return response.json()
                 }
-                throw new BadResponse("impossible de recuperer les imminizations depuis l'hopital")
+                throw new BadResponse(`Impossible de recuperer les imminizations du patient depuis l'hopital (${response.status})`, "O3")
             }).then((data) => {
                 return data.entry
             })
@@ -321,7 +321,7 @@ class ProdHospitalRepository extends HospitalRepository {
                 if (response.ok) {
                     return response.json()
                 }
-                throw new BadResponse("impossible de recuperer les attachements depuis l'hopital")
+                throw new BadResponse(`Impossible de recuperer les attachements du patient depuis l'hopital (${response.status})`, "O3")
             }).then((data) => {
                 return data.results
             })
@@ -341,9 +341,104 @@ class ProdHospitalRepository extends HospitalRepository {
                 if (response.ok) {
                     return response.json()
                 }
-                throw new BadResponse("impossible de recuperer les programmes depuis l'hopital")
+                throw new BadResponse(`Impossible de recuperer les programmes du patient depuis l'hopital (${response.status})`, "O3")
             }).then((data) => {
                 return data.results
+            })
+    }
+
+
+    async getAppointements(): Promise<Array<any>> {
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Basic ${O3_BASE64}`);
+
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+
+        return await fetch(`${O3_BASE_URL}/appointments`, requestOptions)
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+                throw new BadResponse(`Impossible de recuperer les rencontres depuis l'hopital (${response.status})`, "O3")
+            })
+    }
+
+    async getPatientAppointements(patient_id: string): Promise<Array<any>> {
+
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Basic ${O3_BASE64}`);
+
+        const raw = JSON.stringify({
+            patientUuid: patient_id,
+            startDate: "2024-01-01"
+        });
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+        };
+
+        return await fetch(`${O3_BASE_URL}/appointments`, requestOptions)
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+                throw new BadResponse(`Impossible de recuperer les rencontres du patient depuis l'hopital (${response.status})`, "O3")
+            })
+    }
+
+    async getAppointement(appointment_id: string): Promise<any> {
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Basic ${O3_BASE64}`);
+
+        let requestOptions = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+
+        return await fetch(`${O3_BASE_URL}/appointments/${appointment_id}`, requestOptions)
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+                throw new BadResponse(`Impossible de recuperer la depuis l'hopital (${response.status})`, "O3");
+            })
+    }
+
+    async createAppointement(patient_id: string, service_id: string, doctor_id: string, start_date: Date, end_date: Date): Promise<any> {
+
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Basic ${O3_BASE64}`);
+
+        const raw = JSON.stringify({
+            appointmentKind: "Scheduled",
+            serviceUuid: service_id,
+            startDateTime: `${start_date}`,
+            endDateTime: `${end_date}`,
+            providers: [
+                {
+                    uuid: doctor_id
+                }
+            ],
+            patientUuid: patient_id
+        });
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw
+        };
+
+        return await fetch(`${O3_BASE_URL}/appointment`, requestOptions)
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+                throw new BadResponse(`Impossible de créer la rencontre depuis l'hopital (${response.status})`, "O3")
             })
     }
 

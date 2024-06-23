@@ -17,7 +17,8 @@ class InvoiceController {
 
             res.status(200).json({ date: invoice.date, state: invoice.payment_state, currency: invoice.currency_id[1], amount_total: invoice.amount_total, amount_residual: invoice.amount_residual });
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+                    res.status(405).send({ name: err.name, message: err.message });
         }
     } */
 
@@ -28,7 +29,8 @@ class InvoiceController {
             const invoice = await facturation_rep.getInvoice(invoice_id)
             res.status(200).json({ date: invoice.date, state: invoice.payment_state, currency: invoice.currency_id[1], amount_total: invoice.amount_total, amount_residual: invoice.amount_residual });
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 
@@ -39,7 +41,8 @@ class InvoiceController {
             const invoicefile = await facturation_rep.getInvoiceFile(invoice_id)
             res.status(200).send(invoicefile);
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+            res.status(405).send({ name: err.name, message: err.message });
         }
     }
 
@@ -52,7 +55,8 @@ class InvoiceController {
 
             res.status(200).send({ date: invoice.date, state: invoice.payment_state, currency: invoice.currency_id[1], amount_total: invoice.amount_total });
         } catch (error) {
-            res.status(405).json({ message: error });
+            const err: any = error
+                    res.status(405).send({ name: err.name, message: err.message });
         }
     } */
 
