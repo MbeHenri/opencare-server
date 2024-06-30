@@ -412,20 +412,21 @@ class ProdHospitalRepository extends HospitalRepository {
     async createAppointement(patient_id: string, service_id: string, doctor_id: string, start_date: Date, end_date: Date): Promise<any> {
 
         let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
         myHeaders.append("Authorization", `Basic ${O3_BASE64}`);
 
         const raw = JSON.stringify({
-            appointmentKind: "Scheduled",
-            status: 'Cancelled',
-            serviceUuid: service_id,
-            startDateTime: `${start_date}`,
-            endDateTime: `${end_date}`,
-            providers: [
+            "appointmentKind": "Scheduled",
+            "serviceUuid": service_id,
+            "status": 'Cancelled',
+            "startDateTime": start_date.toISOString(),
+            "endDateTime": end_date.toISOString(),
+            "providers": [
                 {
-                    uuid: doctor_id
+                    "uuid": doctor_id
                 }
             ],
-            patientUuid: patient_id
+            "patientUuid": patient_id
         });
 
         const requestOptions = {
@@ -446,16 +447,17 @@ class ProdHospitalRepository extends HospitalRepository {
     async setAppointement(appointment_id: string, patient_id: string, service_id: string, doctor_id: string, start_date: Date, end_date: Date, status: string = 'Scheduled'): Promise<any> {
 
         let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
         myHeaders.append("Authorization", `Basic ${O3_BASE64}`);
 
         const base_raw = {
-            appointmentKind: "Scheduled",
-            status: status,
-            serviceUuid: service_id,
-            startDateTime: `${start_date}`,
-            endDateTime: `${end_date}`,
-            patientUuid: patient_id,
-            uuid: appointment_id,
+            "appointmentKind": "Scheduled",
+            "status": status,
+            "serviceUuid": service_id,
+            "startDateTime": start_date.toUTCString(),
+            "endDateTime": end_date.toUTCString(),
+            "patientUuid": patient_id,
+            "uuid": appointment_id,
         };
 
         const raw = JSON.stringify(doctor_id == "" ? base_raw : {

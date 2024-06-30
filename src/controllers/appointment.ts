@@ -45,7 +45,7 @@ class AppointmentController {
                 const uuidDoctor = doctor_id
                 const uuidPatient = appointment.uuidPatient
 
-                const room = RoomModel.findOne({
+                const room = await RoomModel.findOne({
                     uuidDoctor,
                     uuidPatient,
                 })
@@ -73,6 +73,8 @@ class AppointmentController {
                         uuidDoctor,
                         tokenRoom,
                     })
+                } else {
+                    tokenRoom = room.tokenRoom
                 }
                 // actualisation de l'espace de rencontre
                 await appointment.updateOne(
@@ -122,7 +124,7 @@ class AppointmentController {
                         const uuidPatient = appointment.uuidPatient
                         const uuidDoctor = doctor_uuid
 
-                        const room = RoomModel.findOne({
+                        const room = await RoomModel.findOne({
                             uuidDoctor,
                             uuidPatient
                         })
@@ -149,6 +151,8 @@ class AppointmentController {
                                 uuidDoctor,
                                 tokenRoom,
                             })
+                        } else {
+                            tokenRoom = room.tokenRoom
                         }
                     }
 
@@ -156,12 +160,12 @@ class AppointmentController {
                     await facturation_rep.payInvoice(appointment.idInvoice)
 
                     // signaler que le service a été payé et qu'un espace de consultation a été crée
-                    await appointment.updateOne({ $set: { status: "pay", tokenRoom } })
+                    await appointment.updateOne({ $set: { status: StatusAppointmentDict['pay'], tokenRoom } })
 
                     // on signale à l'hopital que la rencontre peut s'afficher
                     await hospital_rep.setAppointement(appointment.uuidAppointment, appointment.uuidPatient, service.uuid, "", startDateTime, endDateTime, 'Scheduled')
 
-                    res.status(201).json({ status: "pay", tokenRoom });
+                    res.status(201).json({ status: StatusAppointmentDict['pay'], tokenRoom });
 
                 } else {
                     res.status(202).json({ status: appointment.status, tokenRoom: appointment.tokenRoom });

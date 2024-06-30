@@ -2,6 +2,7 @@ import BaseController from "./base";
 import { Request, Response } from "express";
 import { hospital_rep } from "../repositories";
 import { AppointmentModel, StatusAppointmentDict } from "../models/Appointment";
+import { TALK_URL } from "../repositories/env";
 
 class DoctorController extends BaseController {
 
@@ -52,21 +53,16 @@ class DoctorController extends BaseController {
                 if (doctor_id == doctor_uuid) {
                     const el = {
                         // éléments de l'hopital
-                        service: {
-                            uuid: appointment.service.uuid,
-                            name: appointment.service.name,
-                        },
+                        uuid: element.uuidAppointment,
+                        service: appointment.service.name,
                         startDateTime: new Date(appointment.startDateTime),
                         endDateTime: new Date(appointment.endDateTime),
-                        patient: {
-                            uuid: appointment.patient.uuid,
-                            name: appointment.patient.name,
-                        },
+                        patient: appointment.patient.name,
                         statusProgress: appointment.status,
 
                         // élements du système
                         statusPayment: element.status,
-                        tokenRoom: element.tokenRoom == "" || element.status == StatusAppointmentDict["unpay"] ? null : element.tokenRoom,
+                        linkRoom: element.tokenRoom == "" || element.status == StatusAppointmentDict["unpay"] ? null : `${TALK_URL}/call/${element.tokenRoom}`,
                     };
                     output.push(el)
                 }

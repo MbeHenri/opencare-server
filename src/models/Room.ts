@@ -16,10 +16,6 @@ const RoomSchema = new Schema({
         type: String,
         //unique: true,
     },
-    uuidService: {
-        type: String,
-        //unique: true,
-    },
     uuidDoctor: {
         type: String,
         //unique: true,
@@ -27,16 +23,7 @@ const RoomSchema = new Schema({
     tokenRoom: {
         type: String,
         //unique: true,
-        default: ""
     },
-    status: {
-        type: String,
-        default: "unpay"
-    },
-    dateMeeting: {
-        type: Date,
-        default: new Date()
-    }
 
 }, {
     collection: 'rooms'

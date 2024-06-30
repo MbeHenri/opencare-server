@@ -19,6 +19,7 @@ export const TALK_HOST = process.env.TALK_HOST;
 
 export const TALK_BASE64 = base64(`${TALK_USER}:${TALK_PASSWORD}`);
 
+export const TALK_URL = `http://${TALK_HOST}${TALK_PORT ? `:${TALK_PORT}` : ""}`
 export const NC_BASE_URL = `http://${TALK_HOST}${TALK_PORT ? `:${TALK_PORT}` : ""}/ocs/v2.php`
 export const TALK_BASE_URL = `${NC_BASE_URL}/apps/spreed/api/v4`;
 

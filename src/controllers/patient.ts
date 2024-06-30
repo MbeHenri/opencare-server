@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import BaseController from "./base";
 import { facturation_rep, hospital_rep } from "../repositories";
 import { DemandModel } from "../models/Demand";
-import User from "../models/User";
 import { PatientModel } from "../models/Patient";
 import { AppointmentModel, StatusAppointmentDict } from "../models/Appointment";
+import { TALK_URL } from "../repositories/env";
 
 class PatientController extends BaseController {
 
@@ -171,21 +171,16 @@ class PatientController extends BaseController {
 
                 const el = {
                     // éléments de l'hopital
-                    service: {
-                        uuid: appointment.service.uuid,
-                        name: appointment.service.name,
-                    },
+                    uuid: element.uuidAppointment,
+                    service: appointment.service.name,
                     startDateTime: new Date(appointment.startDateTime),
                     endDateTime: new Date(appointment.endDateTime),
-                    patient: {
-                        uuid: appointment.patient.uuid,
-                        name: appointment.patient.name,
-                    },
+                    patient: appointment.patient.name,
                     statusProgress: appointment.status,
 
                     // élements du système
                     statusPayment: element.status,
-                    tokenRoom: element.tokenRoom == "" || element.status == StatusAppointmentDict["unpay"] ? null : element.tokenRoom,
+                    linkRoom: element.tokenRoom == "" || element.status == StatusAppointmentDict["unpay"] ? null : `${TALK_URL}/call/${element.tokenRoom}`,
                 };
                 output.push(el)
             }
