@@ -10,12 +10,18 @@ class DemandController {
         try {
             const uuidService = req.query.service_id
             const uuidPatient = req.query.patient_id
+            const status = req.query.status
+
             const filter = {};
             if (uuidService) {
-                filter["uuidService"] = uuidService
+                filter["uuidService"] = uuidService as string
             }
             if (uuidPatient) {
-                filter["uuidPatient"] = uuidPatient
+                filter["uuidPatient"] = uuidPatient as string
+            }
+
+            if (status) {
+                filter["status"] = status as string
             }
 
             const demands = await DemandModel.find(filter).sort('-demandDate').exec();
@@ -25,10 +31,9 @@ class DemandController {
                 const element = demands[i];
 
                 const demand = {
-                    patient: {
-                        uuid: element.uuidPatient,
-                        names: (await hospital_rep.getPatientDetail(element.uuidPatient)).names
-                    },
+                    id: element.id,
+                    date: element.demandDate,
+                    patient: (await hospital_rep.getPatientDetail(element.uuidPatient)).names,
                     service: (await facturation_rep.getService(element.uuidService)).name,
                     status: element.status
                 }
@@ -140,7 +145,7 @@ class DemandController {
             })
 
             // mis à jour de la demande
-            demand.updateOne({ $set: { status: StatusDemandDict["validated"] } })
+            await demand.updateOne({ $set: { status: StatusDemandDict["validated"] } })
             //const demand = await DemandModel.findById(demand_id)
 
             res.status(201).json({
@@ -168,9 +173,9 @@ class DemandController {
                 throw new Error("la demande n'est pas en attente")
             }
 
-            demand.updateOne({ $set: { status: StatusDemandDict['rejected'] } });
+            await demand.updateOne({ $set: { status: StatusDemandDict['rejected'] } });
             //const updateDemand = await DemandModel.findOne({ uuidService: service_id, uuidPatient: patient_id });
-            res.status(201).json({ status: "rejected" });
+            res.status(201).json({ status: StatusDemandDict['rejected'] });
 
         } catch (error) {
             const err: any = error

@@ -120,6 +120,7 @@ class PatientController extends BaseController {
                 const demand = {
                     service: (await facturation_rep.getService(element.uuidService)).name,
                     status: element.status,
+                    date: element.demandDate,
                     id: element.id,
                 }
                 output.push(demand)
@@ -184,7 +185,7 @@ class PatientController extends BaseController {
                 };
                 output.push(el)
             }
-            res.status(200).json(output);
+            res.status(200).json({ results: output });
         } catch (error) {
             res.status(405).json({ message: error as string });
         }
