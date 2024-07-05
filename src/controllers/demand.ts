@@ -30,12 +30,21 @@ class DemandController {
             for (let i = 0; i < demands.length; i++) {
                 const element = demands[i];
 
+                let idFacture = ""
+                if (element.idAppointment == "") {
+                    const appt = await AppointmentModel.findById(element.idAppointment)
+                    if (appt) {
+                        idFacture = appt.idInvoice;
+                    }
+                }
+
                 const demand = {
                     id: element.id,
                     date: element.demandDate,
                     patient: (await hospital_rep.getPatientDetail(element.uuidPatient)).names,
                     service: (await facturation_rep.getService(element.uuidService)).name,
-                    status: element.status
+                    status: element.status,
+                    idFacture
                 }
                 output.push(demand)
             }
@@ -138,19 +147,20 @@ class DemandController {
             const invoice_id = await facturation_rep.createInvoice(patient.username, [demand.uuidService])
 
             // enregistrement de la rencontre
-            AppointmentModel.create({
+            const appt = await AppointmentModel.create({
                 uuidAppointment: uuidAppointment,
                 uuidPatient: demand.uuidPatient,
                 idInvoice: invoice_id,
             })
 
             // mis à jour de la demande
-            await demand.updateOne({ $set: { status: StatusDemandDict["validated"] } })
+            await demand.updateOne({ $set: { status: StatusDemandDict["validated"], idAppointment: appt.id } })
             //const demand = await DemandModel.findById(demand_id)
 
             res.status(201).json({
                 id: demand.id,
-                status: StatusDemandDict["validated"]
+                status: StatusDemandDict["validated"],
+                IdAppointment: appt.id
             });
 
         } catch (error) {

@@ -7,6 +7,7 @@ export type DemandDocument = Document & {
     uuidService: string,
     demandDate: Date,
     status: string,
+    idAppointment: string
 }
 
 export type DemandInput = {
@@ -22,6 +23,10 @@ const DemandSchema = new Schema({
     uuidService: {
         type: String,
         //unique: true,
+    },
+    idAppointment: {
+        type: String,
+        default: ""
     },
     demandDate: {
         type: Date,
