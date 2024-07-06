@@ -1,13 +1,11 @@
 FROM node:18-alpine
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY package*.json .
+COPY . .
 
-RUN npm install
+RUN yarn install
 
-COPY src .
+EXPOSE 8013
 
-EXPOSE 3001
-
-CMD [ "nodemon", "--watch", "*.ts", "--exec", "ts-node", "./src/server.ts" ]
+CMD [ "yarn", "start" ]
