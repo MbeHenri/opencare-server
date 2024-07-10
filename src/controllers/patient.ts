@@ -117,11 +117,21 @@ class PatientController extends BaseController {
             for (let i = 0; i < demands.length; i++) {
                 const element = demands[i];
 
+                let idFacture = ""
+                if (element.idAppointment && element.idAppointment != "") {
+                    const appt = await AppointmentModel.findById(element.idAppointment as string)
+                    if (appt) {
+                        idFacture = appt.idInvoice;
+                    }
+                }
+
                 const demand = {
+                    id: element.id,
+                    date: element.demandDate,
+                    patient: (await hospital_rep.getPatientDetail(element.uuidPatient)).names,
                     service: (await facturation_rep.getService(element.uuidService)).name,
                     status: element.status,
-                    date: element.demandDate,
-                    id: element.id,
+                    idFacture
                 }
                 output.push(demand)
             }
