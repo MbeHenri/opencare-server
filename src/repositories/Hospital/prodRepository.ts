@@ -20,6 +20,7 @@ class ProdHospitalRepository extends HospitalRepository {
             headers: myHeaders,
         };
 
+
         const result: Patient = await fetch(`${O3_BASE_URL}/patient/${patient_id}?v=full`, requestOptions)
             .then(response => {
                 if (response.ok) {

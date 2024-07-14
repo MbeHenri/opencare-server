@@ -28,7 +28,8 @@ class InvoiceController {
             const invoice_id = req.params.id
 
             const invoice = await facturation_rep.getInvoice(invoice_id)
-            res.status(200).json({ date: invoice.date, state: invoice.payment_state, currency: invoice.currency_id[1], amount_total: invoice.amount_total, amount_residual: invoice.amount_residual });
+
+            res.status(200).json({ facture_name: invoice.name, date: invoice.date, state: invoice.payment_state, currency: invoice.currency_id[1], amount_total: invoice.amount_total, amount_residual: invoice.amount_residual });
         } catch (error) {
             const err: any = error
             res.status(405).send({ name: err.name, message: err.message });
@@ -64,3 +65,4 @@ class InvoiceController {
 }
 
 export default InvoiceController;
+

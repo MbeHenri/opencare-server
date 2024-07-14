@@ -8,44 +8,6 @@ import { DemandInput, DemandModel, StatusDemandDict } from "../models/Demand";
 
 class AppointmentController {
 
-    async getAppointment(req: Request, res: Response) {
-    try {
-      const demand_id = req.params.id;
-      const status = req.query.status;
-
-      const filter = {};
-
-
-      if (status) {
-        filter["status"] = status as string;
-      }
-
-      const demande = await DemandModel.findById(demand_id).exec();
-      const appointment = await AppointmentModel.findOne(filter).exec();
-
-      let service:any
-
-      if(demande){
-        service =  await facturation_rep.getService(demande.uuidService);
-      }
-
-      if(appointment){
-        const output = {
-            _id: appointment._id,
-            uuidAppointment: appointment.uuidAppointment,
-            service_name: service.name,
-            idInvoice: appointment.idInvoice,
-            status: appointment.status,
-        }
-        res.status(200).json(output);
-      }
-
-    } catch (error) {
-      const err: any = error;
-      res.status(405).send({ name: err.name, message: err.message });
-    }
-  }
-
     async setInvoiceToPay(req: Request, res: Response) {
         try {
             const invoice_id = req.params.id

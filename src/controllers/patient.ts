@@ -110,28 +110,30 @@ class PatientController extends BaseController {
     async getDemands(req: Request, res: Response) {
         try {
             const uuidPatient = req.params.id
+            const status = req.query.status;
 
-            const demands = await DemandModel.find({ uuidPatient }).sort('-demandDate').exec();
+            const filter = {};
+
+            if (uuidPatient) {
+                filter["uuidPatient"] = uuidPatient as string;
+              }
+
+              if (status) {
+                filter["status"] = status as string;
+              }
+
+            //const demands = await DemandModel.find({ uuidPatient }).sort('-demandDate').exec();
+            const demands = await DemandModel.find(filter).sort("-demandDate").exec();
             const output: Array<any> = []
 
             for (let i = 0; i < demands.length; i++) {
                 const element = demands[i];
 
-                let idFacture = ""
-                if (element.idAppointment && element.idAppointment != "") {
-                    const appt = await AppointmentModel.findById(element.idAppointment as string)
-                    if (appt) {
-                        idFacture = appt.idInvoice;
-                    }
-                }
-
                 const demand = {
-                    id: element.id,
-                    date: element.demandDate,
-                    patient: (await hospital_rep.getPatientDetail(element.uuidPatient)).names,
                     service: (await facturation_rep.getService(element.uuidService)).name,
                     status: element.status,
-                    idFacture
+                    date: element.demandDate,
+                    id: element.id,
                 }
                 output.push(demand)
             }
@@ -190,6 +192,8 @@ class PatientController extends BaseController {
                     statusProgress: appointment.status,
 
                     // élements du système
+                    idInvoice: element.idInvoice,
+                    price: (await facturation_rep.getService(appointment.service.uuid)).price,
                     statusPayment: element.status,
                     linkRoom: element.tokenRoom == "" || element.status == StatusAppointmentDict["unpay"] ? null : `${TALK_URL}/call/${element.tokenRoom}`,
                 };
@@ -200,7 +204,7 @@ class PatientController extends BaseController {
             res.status(405).json({ message: error as string });
         }
     }
-
 }
 
 export default PatientController;
+

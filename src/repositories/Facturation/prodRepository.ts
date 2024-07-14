@@ -75,8 +75,8 @@ class ProdFacturationRepository extends FacturationRepository {
         if (!res) {
             return []
         }
-        return (res as Array<any>).map((el) => {
 
+        return (res as Array<any>).map((el) => {
             const service: Service = {
                 uuid: `${el.barcode}`.split("#")[1],
                 name: el.name,
@@ -234,7 +234,7 @@ class ProdFacturationRepository extends FacturationRepository {
                     '=',
                     invoice_id
                 ]]],
-                { 'fields': ['id', 'partner_id', 'amount_total', 'amount_residual', 'currency_id', 'payment_state', 'date'], 'limit': 1 }
+                { 'fields': ['id', 'partner_id', 'name', 'amount_total', 'amount_residual', 'currency_id', 'payment_state', 'date'], 'limit': 1 }
             ]);
 
         try {

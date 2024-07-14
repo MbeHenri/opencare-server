@@ -75,28 +75,6 @@ class AppointmentRouter extends BaseRouter {
          *         description: Error
          */
         this.router.put('/:id/pay', this.controller.payAppointment);
-
-        /**
-         * @swagger
-         * /appointment/{id}/pay:
-         *   put:
-         *     summary: Update room appointment with payment
-         *     tags: [Appointment]
-         *     parameters:
-         *       - in: path
-         *         name: id
-         *         schema:
-         *           type: string
-         *         required: true
-         *         description: The appointment id
-         *     responses:
-         *       201:
-         *         description: Update is a success
-         *       405:
-         *         description: Error
-         */
-        this.router.get("/:id/details", this.controller.getAppointment);
-
     }
 }
 
