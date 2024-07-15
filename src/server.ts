@@ -4,8 +4,11 @@ import cors from "cors";
 import mongoose, { ConnectOptions } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import https from 'https';
+import fs from 'fs';
+
 import { PatientModel as Patient } from "./models/Patient";
-import { port, dbURI, key_token, CORS_ALLOW_HOSTS } from "./config";
+import { port, dbURI, key_token, CORS_ALLOW_HOSTS, KEY_PATH, CERT_PATH } from "./config";
 
 import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
@@ -30,11 +33,21 @@ app.use(bodyParser.json(), urlencodedParser);
 
 const options: ConnectOptions = {};
 
+// SSL OPTIONS
+const ssl_options = {
+  key: fs.readFileSync(KEY_PATH),
+  cert: fs.readFileSync(CERT_PATH),
+  //ca: fs.readFileSync(process.env.SSL_CA_PATH)
+};
+
 mongoose
   .connect(dbURI, options)
   .then(() => {
     // only listen for requests once database data has loaded
-    app.listen(PORT, () => console.log(`Server has started at port ${PORT}`));
+    //app.listen(PORT, () => console.log(`Server has started at port ${PORT}`));
+    https.createServer(options, app).listen(PORT, () => {
+        console.log(`Server is running on https://doctor.backbone-corp.com:${PORT}`);
+    });
   })
   .catch((err) => console.log(err));
 
