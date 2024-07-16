@@ -1,4 +1,4 @@
-import { SECURE } from "src/config";
+import { SECURE } from "../config";
 import { base64 } from "../utils";
 
 // O3 env variables
