@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 config();
 
-
+export const SECURE = process.env.SECURE ? process.env.SECURE != "false" : true
 const MONGO_HOST = process.env.MONGO_HOST;
 const MONGO_PORT = process.env.MONGO_PORT;
 const MONGO_USER = process.env.MONGO_USER;
