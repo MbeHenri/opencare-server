@@ -195,7 +195,7 @@ class PatientController extends BaseController {
                     idInvoice: element.idInvoice,
                     price: (await facturation_rep.getService(appointment.service.uuid)).price,
                     statusPayment: element.status,
-                    linkRoom: element.tokenRoom == "" || element.status == StatusAppointmentDict["unpay"] ? null : `${TALK_URL}/call/${element.tokenRoom}`,
+                    linkRoom: element.tokenRoom == "" || element.status == StatusAppointmentDict["unpay"] ? null : `/talk/call/${element.tokenRoom}`,
                 };
                 output.push(el)
             }

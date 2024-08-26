@@ -62,7 +62,7 @@ class DoctorController extends BaseController {
 
                         // élements du système
                         statusPayment: element.status,
-                        linkRoom: element.tokenRoom == "" || element.status == StatusAppointmentDict["unpay"] ? null : `${TALK_URL}/call/${element.tokenRoom}`,
+                        linkRoom: element.tokenRoom == "" || element.status == StatusAppointmentDict["unpay"] ? null : `/talk/call/${element.tokenRoom}`,
                     };
                     output.push(el)
                 }
