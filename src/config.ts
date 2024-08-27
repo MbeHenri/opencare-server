@@ -17,3 +17,4 @@ export const port = process.env.SERVER_PORT ? parseInt(process.env.SERVER_PORT) 
 export const key_token = process.env.KEY_TOKEN ? process.env.KEY_TOKEN : '';
 export const KEY_PATH = SSL_KEY_PATH ? SSL_KEY_PATH : '';
 export const CERT_PATH = SSL_CERT_PATH ? SSL_CERT_PATH : '';
+export const BASE_LINKROOM_TALK = process.env.BASE_LINKROOM_TALK ? process.env.BASE_LINKROOM_TALK : "/talk"

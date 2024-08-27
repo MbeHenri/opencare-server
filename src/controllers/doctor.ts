@@ -2,7 +2,7 @@ import BaseController from "./base";
 import { Request, Response } from "express";
 import { hospital_rep } from "../repositories";
 import { AppointmentModel, StatusAppointmentDict } from "../models/Appointment";
-import { TALK_URL } from "../repositories/env";
+import { getLinkRoom } from "src/utils";
 
 class DoctorController extends BaseController {
 
@@ -62,7 +62,7 @@ class DoctorController extends BaseController {
 
                         // élements du système
                         statusPayment: element.status,
-                        linkRoom: element.tokenRoom == "" || element.status == StatusAppointmentDict["unpay"] ? null : `/talk/call/${element.tokenRoom}`,
+                        linkRoom: element.tokenRoom == "" || element.status == StatusAppointmentDict["unpay"] ? null : getLinkRoom(element.tokenRoom),
                     };
                     output.push(el)
                 }
