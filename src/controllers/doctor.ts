@@ -2,7 +2,7 @@ import BaseController from "./base";
 import { Request, Response } from "express";
 import { hospital_rep } from "../repositories";
 import { AppointmentModel, StatusAppointmentDict } from "../models/Appointment";
-import { getLinkRoom } from "src/utils";
+import { getLinkRoom } from "../utils";
 
 class DoctorController extends BaseController {
 

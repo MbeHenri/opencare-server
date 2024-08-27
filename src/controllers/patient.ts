@@ -4,7 +4,7 @@ import { facturation_rep, hospital_rep } from "../repositories";
 import { DemandModel } from "../models/Demand";
 import { PatientModel } from "../models/Patient";
 import { AppointmentModel, StatusAppointmentDict } from "../models/Appointment";
-import { getLinkRoom } from "src/utils";
+import { getLinkRoom } from "../utils";
 
 class PatientController extends BaseController {
 
