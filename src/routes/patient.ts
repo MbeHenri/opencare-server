@@ -237,6 +237,11 @@ class PatientRouter extends BaseRouter {
          *           type: string
          *         required: true
          *         description: The patient id
+         *       - in: query
+         *         name: doctor
+         *         schema:
+         *           type: string
+         *         description: The person uuid for doctor
          *     responses:
          *       200:
          *         description: The list of appointments contains appointments of the patient

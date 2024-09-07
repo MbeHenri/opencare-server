@@ -167,6 +167,7 @@ class PatientController extends BaseController {
         try {
             const patient_id = req.params.id
             const status = req.query.status
+            const doctor_id = req.query.doctor
             const filter = { uuidPatient: patient_id };
 
             if (status && ([StatusAppointmentDict["pay"], StatusAppointmentDict["unpay"]].includes(status as string))) {
@@ -175,29 +176,35 @@ class PatientController extends BaseController {
 
             const appointments = await AppointmentModel.find(filter);
             const output: Array<any> = [];
+
             for (let index = 0; index < appointments.length; index++) {
                 const element = appointments[index];
 
                 // recupération de l'appointment depuis l'hospital_rep (uuid et details du service doivent etre obtenu)
                 const appointment = await hospital_rep.getAppointement(element.uuidAppointment);
-                //const doctor_uuid = appointment.providers[0].uuid
+                const doctor_uuid = appointment.providers[0].uuid
+                const doctor = await hospital_rep.getDoctor(doctor_uuid)
 
-                const el = {
-                    // éléments de l'hopital
-                    uuid: element.uuidAppointment,
-                    service: appointment.service.name,
-                    startDateTime: new Date(appointment.startDateTime),
-                    endDateTime: new Date(appointment.endDateTime),
-                    patient: appointment.patient.name,
-                    statusProgress: appointment.status,
+                // on ajoute la rencontre si un docteur n'est pas défini comme filtre ou si le docteur défini correspond à celui qui présidera la rencontre
+                if (!doctor_id || (doctor_id && doctor.person.uuid === (doctor_id as string))) {
 
-                    // élements du système
-                    idInvoice: element.idInvoice,
-                    price: (await facturation_rep.getService(appointment.service.uuid)).price,
-                    statusPayment: element.status,
-                    linkRoom: element.tokenRoom == "" || element.status == StatusAppointmentDict["unpay"] ? null : getLinkRoom(element.tokenRoom),
-                };
-                output.push(el)
+                    const el = {
+                        // éléments de l'hopital
+                        uuid: element.uuidAppointment,
+                        service: appointment.service.name,
+                        startDateTime: new Date(appointment.startDateTime),
+                        endDateTime: new Date(appointment.endDateTime),
+                        patient: appointment.patient.name,
+                        statusProgress: appointment.status,
+
+                        // élements du système
+                        idInvoice: element.idInvoice,
+                        price: (await facturation_rep.getService(appointment.service.uuid)).price,
+                        statusPayment: element.status,
+                        linkRoom: element.tokenRoom == "" || element.status == StatusAppointmentDict["unpay"] ? null : getLinkRoom(element.tokenRoom),
+                    };
+                    output.push(el)
+                }
             }
             res.status(200).json({ results: output });
         } catch (error) {
