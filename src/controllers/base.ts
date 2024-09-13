@@ -1,5 +1,5 @@
+import { getLinkRoom } from "src/utils";
 import Room from "../models/Room";
-import { TALK_HOST, TALK_PORT } from "../repositories/env";
 
 class BaseController {
 
@@ -9,7 +9,7 @@ class BaseController {
     * @returns 
     */
     async getRoomURL(room: Room): Promise<string> {
-        return `http://${TALK_HOST}:${TALK_PORT}/call/${room.token}`;
+        return getLinkRoom(room.token)
     }
 }
 
