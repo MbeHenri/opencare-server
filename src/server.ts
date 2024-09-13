@@ -45,7 +45,7 @@ mongoose
   .then(() => {
     // only listen for requests once database data has loaded
     //app.listen(PORT, () => console.log(`Server has started at port ${PORT}`));
-    https.createServer(options, app).listen(PORT, () => {
+    https.createServer(ssl_options, app).listen(PORT, () => {
         console.log(`Server is running on https://doctor.backbone-corp.com:${PORT}`);
     });
   })
