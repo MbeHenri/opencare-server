@@ -1,4 +1,4 @@
-import { getLinkRoom } from "src/utils";
+import { getLinkRoom } from "../utils";
 import Room from "../models/Room";
 
 class BaseController {
