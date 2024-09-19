@@ -36,7 +36,7 @@ class ProdRoomRepository extends RoomRepository {
                 const data = await response.json()
                 const status = data.ocs.meta.statuscode as number
 
-                if (status === 102) {
+                if (status != 102) {
                     throw new BadResponse("L'utilisateur existe déjà dans Talk", "TALK")
                 }
             }
@@ -225,9 +225,7 @@ class ProdRoomRepository extends RoomRepository {
     async addParticipant(username: string, displayName: string, token: string): Promise<void> {
         try {
             const password = await this.getPasswordUser(username);
-            try {
-                await this.createUser(username, displayName, password);
-            } catch (error) { }
+            await this.createUser(username, displayName, password);
             await this.addUserInRoom(token, username);
 
         } catch (error) { }

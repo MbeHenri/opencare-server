@@ -9,8 +9,7 @@ import { Doctor } from "../../models/Doctor";
 
 class ProdHospitalRepository extends HospitalRepository {
 
-    async getPatientDetail(patient_id: string): Promise<Patient> {
-
+        async getPatientDetail(patient_id: string): Promise<Patient> {
 
         let myHeaders = new Headers();
         myHeaders.append("Authorization", `Basic ${O3_BASE64}`);
@@ -37,6 +36,8 @@ class ProdHospitalRepository extends HospitalRepository {
                     age: person.age,
                     birthdate: new Date(person.birthdate),
                     birthdateEstimated: person.birthdateEstimated,
+                    preferredName:person.preferredName,
+                    preferredAddress:person.preferredAddress,
                 }
             })
 

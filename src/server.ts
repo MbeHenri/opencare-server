@@ -47,13 +47,20 @@ mongoose
     //app.listen(PORT, () => console.log(`Server has started at port ${PORT}`));
     https.createServer(ssl_options, app).listen(PORT, () => {
         console.log(`Server is running on https://doctor.backbone-corp.com:${PORT}`);
-    });
+    })
   })
   .catch((err) => console.log(err));
 
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+
+// Define basic route
+app.get('/', (req: Request, res: Response) => {
+  res.json({ message: 'API is working properly' });
+});
+
+
 
 /*app.post("/login", (req, res) => {
   const { username, password } = req.body;

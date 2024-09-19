@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { CustomRequest, customResponse } from "../types/custom";
+import { CustomRequest, customResponse } from "src/types/custom";
 
 const auth = (
   req: CustomRequest,
