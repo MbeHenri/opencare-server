@@ -1,0 +1,29 @@
+name: Deploy OpenCare Switch to VM-Patient
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '21.7.2'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Deploy Switch to VM-Patient
+      env:
+        HOST: ${{ secrets.VM_HOST }}
+        USER: ${{ secrets.VM_USER }}
+        PASS: ${{ secrets.VM_PWD }}
+      run: |
+        # Déploiement du Switch
+        sshpass -p "$PASS" rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ ${USER}@${HOST}:~/opencare-patient/
