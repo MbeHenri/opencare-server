@@ -26,4 +26,4 @@ jobs:
         PASS: ${{ secrets.VM_PWD }}
       run: |
         # Déploiement du Switch
-        sshpass -p "$PASS" rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ ${USER}@${HOST}:~/opencare-patient/
+        sshpass -p "$PASS" rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" ./ ${USER}@${HOST}:~/opencare-server/
